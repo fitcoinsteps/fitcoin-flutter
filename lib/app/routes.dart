@@ -1,31 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../features/home/presentation/pages/home_page.dart';
-import '../features/auth/presentation/pages/login_page.dart';
-import '../features/auth/presentation/pages/register_page.dart';
-import '../features/bookings/presentation/pages/bookings_page.dart';
-import '../features/payments/presentation/pages/payment_page.dart';
-import '../features/profile/presentation/pages/profile_page.dart';
-import '../features/notifications/presentation/pages/notifications_page.dart';
+import 'package:fitcoin/features/home/presentation/pages/home.dart';
+import 'package:fitcoin/features/auth/presentation/pages/login.dart';
+import 'package:fitcoin/features/auth/presentation/pages/register.dart';
+import 'package:fitcoin/features/bookings/presentation/pages/bookings.dart';
+import 'package:fitcoin/features/payments/presentation/pages/payments.dart';
+import 'package:fitcoin/features/profile/presentation/pages/profile.dart';
+import 'package:fitcoin/features/notifications/presentation/pages/notifications.dart';
 import '../navigation/app_shell.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    // ✅ CHANGE THIS: Go directly to home (skip login)
-    initialLocation: '/',  // ← This goes to home page directly
-
-    // OR if you want to see splash screen first:
-    // initialLocation: '/splash',
-
+    initialLocation: '/',
     debugLogDiagnostics: true,
     redirect: (context, state) {
-      // ✅ DISABLE AUTH GUARD FOR NOW
-      // Just return null to allow all navigation
+      // Disable auth guard for now
       return null;
     },
     routes: [
-      // ✅ Add optional splash route
       GoRoute(
         path: '/splash',
         name: 'splash',
@@ -77,7 +70,6 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-// Optional: Splash screen to show app logo first
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 

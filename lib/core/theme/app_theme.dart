@@ -1,22 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'app_colors.dart';
 
 class AppTheme {
-  AppTheme._();
-
   static ThemeData get dark {
-    final base = ThemeData.dark(useMaterial3: true);
-    return base.copyWith(
-      scaffoldBackgroundColor: AppColors.bgDeep,
-      textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).apply(
-        bodyColor: Colors.white,
-        displayColor: Colors.white,
+    return ThemeData(
+      brightness: Brightness.dark,
+      primaryColor: Colors.blue,
+      useMaterial3: true,
+      colorScheme: const ColorScheme.dark(
+        primary: Colors.blue,
+        secondary: Colors.lightBlueAccent,
       ),
-      colorScheme: base.colorScheme.copyWith(
-        primary: AppColors.pinkPrimary,
-        secondary: AppColors.purpleAccent,
-        surface: AppColors.cardBg,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+      ),
+      scaffoldBackgroundColor: Colors.black,
+      cardTheme: CardThemeData(  // Changed from CardTheme to CardThemeData
+        color: Colors.grey[900],
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+    );
+  }
+
+  static ThemeData get light {
+    return ThemeData(
+      brightness: Brightness.light,
+      primaryColor: Colors.blue,
+      useMaterial3: true,
+      colorScheme: const ColorScheme.light(
+        primary: Colors.blue,
+        secondary: Colors.lightBlue,
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        foregroundColor: Colors.black,
+      ),
+      scaffoldBackgroundColor: Colors.white,
+      cardTheme: CardThemeData(  // Changed from CardTheme to CardThemeData
+        color: Colors.white,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
       ),
     );
   }

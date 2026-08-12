@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import '../../core/theme/app_colors.dart';
 
 class GlassBottomNav extends StatelessWidget {
@@ -13,11 +12,19 @@ class GlassBottomNav extends StatelessWidget {
     required this.onTap,
   });
 
+  // Using Material Icons instead of LucideIcons
   static const List<IconData> _icons = [
-    LucideIcons.home,
-    LucideIcons.activity,
-    LucideIcons.trendingUp,
-    LucideIcons.user,
+    Icons.home_outlined,
+    Icons.fitness_center_outlined,
+    Icons.trending_up_outlined,
+    Icons.person_outline,
+  ];
+
+  static const List<IconData> _activeIcons = [
+    Icons.home,
+    Icons.fitness_center,
+    Icons.trending_up,
+    Icons.person,
   ];
 
   @override
@@ -30,9 +37,9 @@ class GlassBottomNav extends StatelessWidget {
           height: 66,
           padding: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.06),
+            color: Colors.white.withValues(alpha: 0.06), // Fixed deprecated withOpacity
             borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.12)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.12)), // Fixed deprecated withOpacity
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -52,12 +59,12 @@ class GlassBottomNav extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: active
-                            ? AppColors.pinkPrimary.withOpacity(0.18)
+                            ? AppColors.pinkPrimary.withValues(alpha: 0.18) // Fixed deprecated withOpacity
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Icon(
-                        _icons[i],
+                        active ? _activeIcons[i] : _icons[i],
                         color: active
                             ? AppColors.pinkBright
                             : AppColors.textLavender,

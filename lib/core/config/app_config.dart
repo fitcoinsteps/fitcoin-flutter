@@ -30,7 +30,7 @@ class AppConfig {
     enableLogging: true,
     enableAnalytics: false,
     useMockData: true,
-    sentryDsn: '', // Disabled in dev
+    sentryDsn: '',
   );
 
   // Staging config

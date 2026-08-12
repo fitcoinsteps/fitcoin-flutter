@@ -1,13 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../logger/app_logger.dart';
+import 'package:logger/logger.dart';
 
 class AuthInterceptor extends Interceptor {
   final FlutterSecureStorage _storage;
   final Logger _logger;
+  String? _cachedToken;
 
   AuthInterceptor(this._storage, this._logger);
+
+  void updateToken(String token) {
+    _cachedToken = token;
+    _logger.i('🔑 Auth token updated in interceptor');
+  }
+
+  void clearToken() {
+    _cachedToken = null;
+    _logger.i('🔑 Auth token cleared from interceptor');
+  }
 
   @override
   Future<void> onRequest(
@@ -17,17 +27,25 @@ class AuthInterceptor extends Interceptor {
     // Skip auth header for public endpoints
     final publicPaths = ['/auth/login', '/auth/register', '/auth/refresh'];
     if (publicPaths.any((path) => options.path.contains(path))) {
-      _logger.api('Skipping auth for public endpoint: ${options.path}');
+      _logger.d('Skipping auth for public endpoint: ${options.path}');
       return handler.next(options);
     }
 
     try {
-      final token = await _storage.read(key: 'access_token');
+      // Use cached token if available, otherwise read from storage
+      String? token = _cachedToken;
+      if (token == null) {
+        token = await _storage.read(key: 'access_token');
+        if (token != null) {
+          _cachedToken = token;
+        }
+      }
+
       if (token != null && token.isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $token';
-        _logger.api('🔑 Added auth token to request: ${options.path}');
+        _logger.d('🔑 Added auth token to request: ${options.path}');
       } else {
-        _logger.api('⚠️ No auth token available for: ${options.path}');
+        _logger.d('⚠️ No auth token available for: ${options.path}');
       }
     } catch (e) {
       _logger.e('Error adding auth token: $e');

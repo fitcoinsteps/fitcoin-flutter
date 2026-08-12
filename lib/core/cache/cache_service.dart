@@ -1,6 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logger/app_logger.dart';
+import 'package:logger/logger.dart';
+import '../logger/app_logger.dart'; // Import the logger provider
 
 final cacheServiceProvider = Provider<CacheService>((ref) {
   final logger = ref.watch(loggerProvider);
@@ -18,13 +19,13 @@ class CacheService {
   CacheService(this._logger);
 
   Future<void> init() async {
-    _logger.db('Initializing Hive...');
+    _logger.d('Initializing Hive...');
     await Hive.initFlutter();
     await Hive.openBox(_userBox);
     await Hive.openBox(_bookingBox);
     await Hive.openBox(_settingsBox);
     await Hive.openBox(_cacheBox);
-    _logger.db('Hive initialized successfully');
+    _logger.d('Hive initialized successfully');
   }
 
   Box getUserBox() => Hive.box(_userBox);
@@ -34,7 +35,7 @@ class CacheService {
 
   // User cache
   void cacheUser(Map<String, dynamic> user) {
-    _logger.db('Caching user: ${user['email']}');
+    _logger.d('Caching user: ${user['email']}');
     final box = getUserBox();
     box.put('current_user', user);
     box.put('user_email', user['email']);
@@ -45,20 +46,20 @@ class CacheService {
     final box = getUserBox();
     final user = box.get('current_user');
     if (user != null) {
-      _logger.db('Retrieved cached user');
+      _logger.d('Retrieved cached user');
     }
     return user as Map<String, dynamic>?;
   }
 
   void clearUser() {
-    _logger.db('Clearing user cache');
+    _logger.d('Clearing user cache');
     final box = getUserBox();
     box.clear();
   }
 
-  // Token cache (in addition to secure storage)
+  // Token cache methods
   void cacheToken(String token) {
-    _logger.db('Caching token (insecure cache - for quick access only)');
+    _logger.d('Caching token');
     final box = getCacheBox();
     box.put('access_token', token);
   }
@@ -70,7 +71,7 @@ class CacheService {
 
   // Generic cache
   void cacheData(String key, dynamic value) {
-    _logger.db('Caching data: $key');
+    _logger.d('Caching data: $key');
     final box = getCacheBox();
     box.put(key, value);
   }
@@ -81,14 +82,14 @@ class CacheService {
   }
 
   void clearCache() {
-    _logger.db('Clearing all cache');
+    _logger.d('Clearing all cache');
     final box = getCacheBox();
     box.clear();
   }
 
   // Settings
   void setSetting(String key, dynamic value) {
-    _logger.db('Setting: $key = $value');
+    _logger.d('Setting: $key = $value');
     final box = getSettingsBox();
     box.put(key, value);
   }

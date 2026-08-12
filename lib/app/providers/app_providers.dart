@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/config/app_config.dart';
+import 'package:fitcoin/core/config/app_config.dart';
 
 final appConfigProvider = Provider<AppConfig>((ref) {
   throw UnimplementedError('Should be overridden in bootstrap');

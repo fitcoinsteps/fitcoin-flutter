@@ -8,23 +8,23 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    _logger.api('''
+    _logger.d('''
 ┌─────────────────────────────────────────────────────
 │ 📤 REQUEST: ${options.method} ${options.uri}
 │ 📋 Headers: ${options.headers}
 │ 📦 Data: ${options.data}
 └─────────────────────────────────────────────────────''');
-    return handler.next(options);
+    handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    _logger.api('''
+    _logger.d('''
 ┌─────────────────────────────────────────────────────
 │ 📥 RESPONSE: ${response.statusCode} ${response.requestOptions.path}
 │ 📦 Data: ${response.data}
 └─────────────────────────────────────────────────────''');
-    return handler.next(response);
+    handler.next(response);
   }
 
   @override
@@ -35,6 +35,6 @@ class LoggingInterceptor extends Interceptor {
 │ 📋 Message: ${err.message}
 │ 📦 Response: ${err.response?.data}
 └─────────────────────────────────────────────────────''');
-    return handler.next(err);
+    handler.next(err);
   }
 }

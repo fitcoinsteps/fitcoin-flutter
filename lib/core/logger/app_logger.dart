@@ -1,42 +1,53 @@
-import 'package:logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../config/app_config.dart';
+import 'package:logger/logger.dart';
 
+// Define the logger provider here
 final loggerProvider = Provider<Logger>((ref) {
-  final config = ref.watch(appConfigProvider);
-
   return Logger(
-    level: config.debugMode ? Level.debug : Level.info,
+    level: Level.debug,
     printer: PrettyPrinter(
       methodCount: 0,
       errorMethodCount: 5,
       lineLength: 120,
       colors: true,
       printEmojis: true,
-      printTime: true,
+      dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
     ),
   );
 });
 
-// Convenience extension for quick logging
-extension LoggerExtension on Logger {
+// Global logger instance for non-provider usage
+final Logger appLogger = Logger(
+  level: Level.debug,
+  printer: PrettyPrinter(
+    methodCount: 0,
+    errorMethodCount: 5,
+    lineLength: 120,
+    colors: true,
+    printEmojis: true,
+    dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
+  ),
+);
+
+// Extension methods for logger
+extension LoggerExtensions on Logger {
+  void db(String message) {
+    d('[DB] $message');
+  }
+
   void api(String message) {
-    d('🌐 API: $message');
+    d('[API] $message');
   }
 
   void auth(String message) {
-    d('🔐 AUTH: $message');
+    d('[AUTH] $message');
   }
 
-  void payment(String message) {
-    d('💳 PAYMENT: $message');
+  void cache(String message) {
+    d('[CACHE] $message');
   }
 
-  void booking(String message) {
-    d('📅 BOOKING: $message');
-  }
-
-  void db(String message) {
-    d('💾 DB: $message');
+  void network(String message) {
+    d('[NETWORK] $message');
   }
 }
