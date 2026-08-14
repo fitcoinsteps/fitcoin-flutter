@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
-// Define the logger provider here
 final loggerProvider = Provider<Logger>((ref) {
   return Logger(
     level: Level.debug,
@@ -16,7 +15,6 @@ final loggerProvider = Provider<Logger>((ref) {
   );
 });
 
-// Global logger instance for non-provider usage
 final Logger appLogger = Logger(
   level: Level.debug,
   printer: PrettyPrinter(
@@ -29,7 +27,6 @@ final Logger appLogger = Logger(
   ),
 );
 
-// Extension methods for logger
 extension LoggerExtensions on Logger {
   void db(String message) {
     d('[DB] $message');

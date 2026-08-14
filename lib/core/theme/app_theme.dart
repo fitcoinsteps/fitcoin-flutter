@@ -16,7 +16,7 @@ class AppTheme {
         centerTitle: true,
       ),
       scaffoldBackgroundColor: Colors.black,
-      cardTheme: CardThemeData(  // Changed from CardTheme to CardThemeData
+      cardTheme: CardThemeData(
         color: Colors.grey[900],
         elevation: 2,
         shape: RoundedRectangleBorder(
@@ -42,7 +42,7 @@ class AppTheme {
         foregroundColor: Colors.black,
       ),
       scaffoldBackgroundColor: Colors.white,
-      cardTheme: CardThemeData(  // Changed from CardTheme to CardThemeData
+      cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 2,
         shape: RoundedRectangleBorder(

@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 
@@ -24,7 +23,7 @@ class BackgroundWidget extends StatelessWidget {
             top: -70,
             left: -70,
             child: _GlowBlob(
-              color: AppColors.pinkPrimary.withOpacity(0.28),
+              color: AppColors.pinkPrimary.withValues(alpha: 0.28),
               size: 260,
             ),
           ),
@@ -32,7 +31,7 @@ class BackgroundWidget extends StatelessWidget {
             top: 120,
             right: -100,
             child: _GlowBlob(
-              color: AppColors.purpleAccent.withOpacity(0.22),
+              color: AppColors.purpleAccent.withValues(alpha: 0.22),
               size: 260,
             ),
           ),
@@ -40,7 +39,7 @@ class BackgroundWidget extends StatelessWidget {
             bottom: -60,
             left: -40,
             child: _GlowBlob(
-              color: AppColors.blueAccent.withOpacity(0.16),
+              color: AppColors.blueAccent.withValues(alpha: 0.16),
               size: 220,
             ),
           ),
@@ -69,7 +68,7 @@ class _GlowBlob extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(colors: [color, color.withOpacity(0)]),
+        gradient: RadialGradient(colors: [color, color.withValues(alpha: 0)]),
       ),
     );
   }
@@ -96,10 +95,10 @@ class _WaveSparklePainter extends CustomPainter {
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 25)
       ..shader = LinearGradient(
         colors: [
-          AppColors.pinkPrimary.withOpacity(0.0),
-          AppColors.pinkPrimary.withOpacity(0.6),
-          AppColors.purpleAccent.withOpacity(0.4),
-          AppColors.pinkPrimary.withOpacity(0.0),
+          AppColors.pinkPrimary.withValues(alpha: 0.0),
+          AppColors.pinkPrimary.withValues(alpha: 0.6),
+          AppColors.purpleAccent.withValues(alpha: 0.4),
+          AppColors.pinkPrimary.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     canvas.drawPath(path, outerGlowPaint);
@@ -111,7 +110,7 @@ class _WaveSparklePainter extends CustomPainter {
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8)
       ..shader = LinearGradient(
         colors: [
-          AppColors.pinkPrimary.withOpacity(0.4),
+          AppColors.pinkPrimary.withValues(alpha: 0.4),
           AppColors.pinkPrimary,
           AppColors.purpleAccent,
         ],
@@ -122,15 +121,15 @@ class _WaveSparklePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0
       ..strokeCap = StrokeCap.round
-      ..color = Colors.white.withOpacity(0.3);
+      ..color = Colors.white.withValues(alpha: 0.3);
     canvas.drawPath(path, highlightPaint);
 
     final sparklePaint = Paint()
-      ..color = AppColors.pinkPrimary.withOpacity(0.9)
+      ..color = AppColors.pinkPrimary.withValues(alpha: 0.9)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
 
     final crossPaint = Paint()
-      ..color = Colors.white.withOpacity(0.6)
+      ..color = Colors.white.withValues(alpha: 0.6)
       ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round;
 

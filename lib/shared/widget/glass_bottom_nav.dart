@@ -12,7 +12,6 @@ class GlassBottomNav extends StatelessWidget {
     required this.onTap,
   });
 
-  // Using Material Icons instead of LucideIcons
   static const List<IconData> _icons = [
     Icons.home_outlined,
     Icons.fitness_center_outlined,
@@ -37,14 +36,17 @@ class GlassBottomNav extends StatelessWidget {
           height: 66,
           padding: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.06), // Fixed deprecated withOpacity
+            color: Colors.white.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.12)), // Fixed deprecated withOpacity
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.12),
+            ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(_icons.length, (i) {
               final active = i == currentIndex;
+
               return Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -59,7 +61,7 @@ class GlassBottomNav extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: active
-                            ? AppColors.pinkPrimary.withValues(alpha: 0.18) // Fixed deprecated withOpacity
+                            ? AppColors.pinkPrimary.withValues(alpha: 0.18)
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
                       ),
