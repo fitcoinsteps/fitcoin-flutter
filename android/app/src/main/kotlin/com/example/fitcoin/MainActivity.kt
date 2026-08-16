@@ -1,4 +1,4 @@
-package com.fitcoin.app;
+package app.fitcoin.com;
 
 import io.flutter.embedding.android.FlutterActivity
 

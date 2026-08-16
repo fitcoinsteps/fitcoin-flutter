@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.fitcoin.app"
+    namespace = "app.fitcoin.com"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
