@@ -34,25 +34,32 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
     setState(() => _isLoading = true);
 
     final notifier = ref.read(otpVerificationProvider.notifier);
-    await notifier.verifyOtp(email: widget.email, otp: _otpController.text);
+    await notifier.verifyOtp(
+      email: widget.email,
+      code: _otpController.text,
+    );
+
+    if (!mounted) return;
 
     final state = ref.read(otpVerificationProvider);
     state.when(
-      initial: () {},
-      loading: () {},
+      initial: () {
+        setState(() => _isLoading = false);
+      },
+      loading: () {
+        // Still loading, keep spinner
+      },
       success: (user) {
-        if (mounted) {
-          debugPrint('✅ User verified: ${user.firstName} ${user.lastName}');
-          context.go('/');
-        }
+        setState(() => _isLoading = false);
+        debugPrint('✅ User verified: ${user.firstName} ${user.lastName}');
+        // Navigate to home
+        context.go('/');
       },
       error: (message) {
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(message)));
-        }
         setState(() => _isLoading = false);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
       },
     );
   }
@@ -64,26 +71,24 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
         .read(authRepositoryProvider)
         .resendOtp(email: widget.email);
 
+    if (!mounted) return;
+
     result.fold(
-      (failure) {
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(failure.message)));
-        }
+          (failure) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(failure.message)));
       },
-      (message) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('OTP resent successfully. Check your email.'),
-            ),
-          );
-        }
+          (message) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('OTP resent successfully. Check your email.'),
+          ),
+        );
       },
     );
-
-    setState(() => _isLoading = false);
   }
 
   @override
@@ -91,9 +96,7 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
     final otpState = ref.watch(otpVerificationProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final isLoading =
-        _isLoading ||
-        otpState.maybeWhen(loading: () => true, orElse: () => false);
+    final isLoading = _isLoading;
 
     final errorMessage = otpState.maybeWhen(
       error: (message) => message,
@@ -203,20 +206,20 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
                   ),
                   child: isLoading
                       ? const SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
                       : const Text(
-                          'Verify & Continue',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                    'Verify & Continue',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

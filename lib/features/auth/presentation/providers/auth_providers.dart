@@ -31,7 +31,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
   final RegisterUseCase registerUseCase;
 
   RegistrationNotifier(this.registerUseCase)
-    : super(const RegistrationState.initial());
+      : super(const RegistrationState.initial());
 
   Future<void> register({
     required String firstName,
@@ -53,8 +53,8 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     );
 
     result.fold(
-      (failure) => state = RegistrationState.error(message: failure.message),
-      (response) => state = RegistrationState.success(response: response),
+          (failure) => state = RegistrationState.error(message: failure.message),
+          (response) => state = RegistrationState.success(response: response),
     );
   }
 
@@ -64,24 +64,27 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
 }
 
 final registrationProvider =
-    StateNotifierProvider<RegistrationNotifier, RegistrationState>(
+StateNotifierProvider<RegistrationNotifier, RegistrationState>(
       (ref) => RegistrationNotifier(ref.read(registerUseCaseProvider)),
-    );
+);
 
 class OtpVerificationNotifier extends StateNotifier<OtpVerificationState> {
   final VerifyOtpUseCase verifyOtpUseCase;
 
   OtpVerificationNotifier(this.verifyOtpUseCase)
-    : super(const OtpVerificationState.initial());
+      : super(const OtpVerificationState.initial());
 
-  Future<void> verifyOtp({required String email, required String otp}) async {
+  Future<void> verifyOtp({
+    required String email,
+    required String code, // ✅ Changed from 'otp' to 'code'
+  }) async {
     state = const OtpVerificationState.loading();
 
-    final result = await verifyOtpUseCase(email: email, otp: otp);
+    final result = await verifyOtpUseCase(email: email, code: code);
 
     result.fold(
-      (failure) => state = OtpVerificationState.error(message: failure.message),
-      (user) => state = OtpVerificationState.success(user: user),
+          (failure) => state = OtpVerificationState.error(message: failure.message),
+          (user) => state = OtpVerificationState.success(user: user),
     );
   }
 
@@ -91,6 +94,6 @@ class OtpVerificationNotifier extends StateNotifier<OtpVerificationState> {
 }
 
 final otpVerificationProvider =
-    StateNotifierProvider<OtpVerificationNotifier, OtpVerificationState>(
+StateNotifierProvider<OtpVerificationNotifier, OtpVerificationState>(
       (ref) => OtpVerificationNotifier(ref.read(verifyOtpUseCaseProvider)),
-    );
+);

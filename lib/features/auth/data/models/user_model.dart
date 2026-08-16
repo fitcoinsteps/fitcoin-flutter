@@ -73,10 +73,11 @@ class UserModel {
       phoneVerifiedAt: json['phone_verified_at'] != null,
       avatar: json['avatar'],
       status: json['status'] ?? 'active',
-      isActive: json['is_active'] ?? true,
-      isLocked: json['is_locked'] ?? false,
+      // ✅ Fix: Handle both int and bool for is_active
+      isActive: _parseBool(json['is_active']),
+      isLocked: _parseBool(json['is_locked']),
       lockedUntil: json['locked_until'],
-      isDeleted: json['is_deleted'] ?? false,
+      isDeleted: _parseBool(json['is_deleted']),
       lastLoginAt: json['last_login_at'],
       lastActivityAt: json['last_activity_at'],
       createdBy: json['created_by'],
@@ -123,5 +124,16 @@ class UserModel {
       'updated_at': updatedAt,
       'deleted_at': deletedAt,
     };
+  }
+
+  // ✅ Helper method to parse bool from int, bool, or string
+  static bool _parseBool(dynamic value) {
+    if (value == null) return false;
+    if (value is bool) return value;
+    if (value is int) return value == 1;
+    if (value is String) {
+      return value == '1' || value.toLowerCase() == 'true';
+    }
+    return false;
   }
 }

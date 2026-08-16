@@ -45,12 +45,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           : null,
     );
 
+    if (!mounted) return;
+
     final state = ref.read(registrationProvider);
     state.when(
       initial: () {},
       loading: () {},
       success: (response) {
-        if (!mounted) return;
         context.push(
           '/verify-otp',
           extra: {
@@ -60,7 +61,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         );
       },
       error: (message) {
-        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),
         );
@@ -218,6 +218,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 if (errorMessage != null)
                   Container(
                     padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                       color: Colors.red.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
@@ -238,7 +239,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ],
                     ),
                   ),
-                if (errorMessage != null) const SizedBox(height: 16),
 
                 SizedBox(
                   width: double.infinity,
@@ -282,7 +282,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         color: isDark ? Colors.grey[400] : Colors.grey[600],
                       ),
                     ),
-                    TextButton(onPressed: () {}, child: const Text('Sign In')),
+                    TextButton(
+                      onPressed: () {
+                        context.go('/login'); // ✅ Fixed: Navigate to login
+                      },
+                      child: const Text('Sign In'),
+                    ),
                   ],
                 ),
               ],

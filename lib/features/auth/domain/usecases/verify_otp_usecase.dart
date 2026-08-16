@@ -10,18 +10,18 @@ class VerifyOtpUseCase {
 
   Future<Either<Failure, UserEntity>> call({
     required String email,
-    required String otp,
+    required String code, // ✅ Changed from 'otp' to 'code'
   }) async {
     if (email.isEmpty) {
       return Left(ValidationFailure(message: 'Email is required'));
     }
-    if (otp.isEmpty) {
+    if (code.isEmpty) {
       return Left(ValidationFailure(message: 'OTP is required'));
     }
-    if (otp.length != 6) {
+    if (code.length != 6) {
       return Left(ValidationFailure(message: 'OTP must be 6 digits'));
     }
 
-    return await repository.verifyOtp(email: email, otp: otp);
+    return await repository.verifyOtp(email: email, code: code);
   }
 }

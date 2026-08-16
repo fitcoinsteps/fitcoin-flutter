@@ -19,10 +19,10 @@ void main() {
 
   group('VerifyOtpUseCase', () {
     const email = 'john@example.com';
-    const otp = '123456';
+    const code = '123456'; // ✅ Changed from 'otp' to 'code'
 
     test('should return ValidationFailure when email is empty', () async {
-      final result = await useCase(email: '', otp: otp);
+      final result = await useCase(email: '', code: code); // ✅ Changed
       expect(
         result,
         Left<Failure, UserEntity>(
@@ -32,7 +32,7 @@ void main() {
     });
 
     test('should return ValidationFailure when OTP is empty', () async {
-      final result = await useCase(email: email, otp: '');
+      final result = await useCase(email: email, code: ''); // ✅ Changed
       expect(
         result,
         Left<Failure, UserEntity>(
@@ -42,7 +42,7 @@ void main() {
     });
 
     test('should return ValidationFailure when OTP is not 6 digits', () async {
-      final result = await useCase(email: email, otp: '12345');
+      final result = await useCase(email: email, code: '12345'); // ✅ Changed
       expect(
         result,
         Left<Failure, UserEntity>(
@@ -52,7 +52,6 @@ void main() {
     });
 
     test('should return UserEntity when OTP is valid', () async {
-      // ✅ Remove 'const' – DateTime is not constant
       final user = UserEntity(
         id: '1',
         employeeCode: 'EMP001',
@@ -64,10 +63,10 @@ void main() {
         createdAt: DateTime(2024, 1, 1),
       );
 
-      when(() => mockRepository.verifyOtp(email: email, otp: otp))
+      when(() => mockRepository.verifyOtp(email: email, code: code)) // ✅ Changed
           .thenAnswer((_) async => Right(user));
 
-      final result = await useCase(email: email, otp: otp);
+      final result = await useCase(email: email, code: code); // ✅ Changed
       expect(result, Right<Failure, UserEntity>(user));
     });
   });

@@ -35,12 +35,12 @@ class AuthRemoteDataSource {
 
   Future<UserModel> verifyOtp({
     required String email,
-    required String otp,
+    required String code, // ✅ Changed from 'otp' to 'code'
   }) async {
     try {
       final response = await dio.post(
         '/verify-otp',
-        data: {'email': email, 'otp': otp},
+        data: {'email': email, 'code': code}, // ✅ Send 'code' not 'otp'
       );
 
       if (response.statusCode == 200) {

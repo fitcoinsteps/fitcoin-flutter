@@ -45,12 +45,12 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> verifyOtp({
     required String email,
-    required String otp,
+    required String code, // ✅ Changed from 'otp' to 'code'
   }) async {
     try {
       final userModel = await remoteDataSource.verifyOtp(
         email: email,
-        otp: otp,
+        code: code, // ✅ Changed from 'otp' to 'code'
       );
 
       final userEntity = UserMapper.toEntity(userModel);
