@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:918733767506:android:984edab1956fb6749e708b",
+        "mobilesdk_app_id": "1:918733767506:android:43c1460d232e3b499e708b",
         "android_client_info": {
-          "package_name": "com.fitcoin.app"
+          "package_name": "app.fitcoin.com"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "918733767506-5pi69oivtuhldjnj73fuiu7ir3qkc6gr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDXHDjsDX9m36ZGc9FNlWlC2VSLGrcY5vM"
@@ -20,7 +25,41 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918733767506-5pi69oivtuhldjnj73fuiu7ir3qkc6gr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918733767506:android:984edab1956fb6749e708b",
+        "android_client_info": {
+          "package_name": "com.fitcoin.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918733767506-5pi69oivtuhldjnj73fuiu7ir3qkc6gr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXHDjsDX9m36ZGc9FNlWlC2VSLGrcY5vM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918733767506-5pi69oivtuhldjnj73fuiu7ir3qkc6gr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
