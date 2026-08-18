@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fitcoin/features/logout/presentation/providers/logout_providers.dart';
-import 'package:fitcoin/features/logout/presentation/states/logout_states.dart';
+import 'package:fitcoin/core/theme/app_colors.dart';
+import 'package:fitcoin/core/theme/widgets/global_app_bar.dart';
+import 'package:fitcoin/core/theme/widgets/starfield_background.dart';
+import 'package:fitcoin/features/step_counter/presentation/providers/step_providers.dart';
+import 'package:fitcoin/features/step_counter/presentation/states/step_states.dart';
+import 'package:fitcoin/features/step_counter/presentation/widgets/step_progress_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -12,182 +16,123 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  void _logout() async {
-    final notifier = ref.read(logoutProvider.notifier);
-    await notifier.logout();
-
-    if (!mounted) return;
-
-    final state = ref.read(logoutProvider);
-    switch (state) {
-      case LogoutInitial():
-        break;
-      case LogoutLoading():
-        break;
-      case LogoutSuccess():
-        context.go('/login');
-        break;
-      case LogoutError(:final message):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-        break;
-    }
-  }
-
-  void _logoutAllDevices() async {
-    // Show confirmation dialog
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout All Devices'),
-        content: const Text('Are you sure you want to logout from all devices?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Logout All'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed != true) return;
-
-    if (!mounted) return;
-
-    final notifier = ref.read(logoutProvider.notifier);
-    await notifier.logoutAllDevices();
-
-    if (!mounted) return;
-
-    final state = ref.read(logoutProvider);
-    switch (state) {
-      case LogoutInitial():
-        break;
-      case LogoutLoading():
-        break;
-      case LogoutSuccess():
-        context.go('/login');
-        break;
-      case LogoutError(:final message):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-        break;
-    }
+  @override
+  void initState() {
+    super.initState();
+    // Initialize step counter on home load
+    Future.microtask(() {
+      ref.read(stepControllerProvider.notifier).init();
+      ref.read(stepControllerProvider.notifier).startStepCounting();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final logoutState = ref.watch(logoutProvider);
-    final isLoading = logoutState is LogoutLoading;
+    final stepState = ref.watch(stepControllerProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'logout') {
-                _logout();
-              } else if (value == 'logout_all') {
-                _logoutAllDevices();
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout, size: 20),
-                    SizedBox(width: 8),
-                    Text('Logout'),
-                  ],
-                ),
+    return StarfieldBackground(
+      child: Column(
+        children: [
+          GlobalAppBar(
+            leading: GestureDetector(
+              onTap: () => context.go('/profile'),
+              child: const Icon(Icons.person_outline, color: Colors.white, size: 28),
+            ),
+            titleWidget: Text(
+              'FITCOIN',
+              style: TextStyle(
+                color: AppColors.primaryPink,
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.5,
+                shadows: [
+                  Shadow(
+                    color: AppColors.primaryPink.withValues(alpha: 0.5),
+                    blurRadius: 12,
+                    offset: Offset.zero,
+                  ),
+                  Shadow(
+                    color: AppColors.primaryPink.withValues(alpha: 0.2),
+                    blurRadius: 24,
+                    offset: Offset.zero,
+                  ),
+                ],
               ),
-              const PopupMenuItem(
-                value: 'logout_all',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout, size: 20, color: Colors.orange),
-                    SizedBox(width: 8),
-                    Text('Logout All Devices'),
-                  ],
-                ),
+            ),
+            actions: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.monetization_on, color: AppColors.primaryPink, size: 22),
+                  const SizedBox(width: 5),
+                  const Text(
+                    '1,250',
+                    style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700),
+                  ),
+                ],
               ),
             ],
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Welcome to Fitcoin',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Your fitness journey starts here.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Step Counter Card (if loaded)
+                  if (stepState is StepLoaded)
+                    StepProgressCard(stepData: stepState.stepData, isSyncing: stepState.isSyncing)
+                  else if (stepState is StepLoading)
+                    const Center(child: CircularProgressIndicator())
+                  else if (stepState is StepError)
+                      Text(stepState.message, style: const TextStyle(color: Colors.red))
+                    else
+                      const SizedBox.shrink(),
+
+                  const SizedBox(height: 20),
+
+                  // Button to open full step dashboard
+                  OutlinedButton.icon(
+                    onPressed: () => context.push('/step-dashboard'),
+                    icon: const Icon(Icons.directions_walk, color: AppColors.primaryPink),
+                    label: const Text('View Step Counter', style: TextStyle(color: Colors.white)),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppColors.primaryPink),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Button to open live tracking
+                  OutlinedButton.icon(
+                    onPressed: () => context.push('/tracking'),
+                    icon: const Icon(Icons.map, color: AppColors.primaryPink),
+                    label: const Text('Live Tracking', style: TextStyle(color: Colors.white)),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppColors.primaryPink),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.home,
-                size: 80,
-                color: Colors.indigo,
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Welcome to Fitcoin',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Your fitness journey starts here.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 32),
-              if (isLoading)
-                const CircularProgressIndicator()
-              else ...[
-                ElevatedButton.icon(
-                  onPressed: _logout,
-                  icon: const Icon(Icons.logout),
-                  label: const Text('Logout'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                OutlinedButton.icon(
-                  onPressed: _logoutAllDevices,
-                  icon: const Icon(Icons.logout, color: Colors.orange),
-                  label: const Text(
-                    'Logout All Devices',
-                    style: TextStyle(color: Colors.orange),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.orange),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
       ),
     );
   }

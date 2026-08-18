@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:fitcoin/core/theme/widgets/global_bottom_nav_bar.dart';
 
 final selectedTabProvider = StateProvider<int>((ref) => 0);
 
@@ -14,7 +15,17 @@ class AppShell extends ConsumerStatefulWidget {
 }
 
 class _AppShellState extends ConsumerState<AppShell> {
-  void _onTabTapped(int index, WidgetRef ref, BuildContext context) {
+  // We start with index 0 (Home) – no need to read the current route.
+  @override
+  void initState() {
+    super.initState();
+    // Optionally set the initial tab to match the initial location
+    // if you want to sync on first load, but we can just keep 0.
+    // If you want to sync, you can use WidgetsBinding to get the
+    // initial route from the router, but it's not necessary.
+  }
+
+  void _onTabTapped(int index) {
     ref.read(selectedTabProvider.notifier).state = index;
 
     switch (index) {
@@ -22,16 +33,13 @@ class _AppShellState extends ConsumerState<AppShell> {
         context.go('/');
         break;
       case 1:
-        context.go('/bookings');
+        context.go('/profile');
         break;
       case 2:
-        context.go('/payments');
+        context.go('/earnings');
         break;
       case 3:
-        context.go('/notifications');
-        break;
-      case 4:
-        context.go('/profile');
+        context.go('/rewards');
         break;
       default:
         context.go('/');
@@ -44,40 +52,9 @@ class _AppShellState extends ConsumerState<AppShell> {
 
     return Scaffold(
       body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: GlobalBottomNavBar(
         currentIndex: selectedIndex,
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) => _onTabTapped(index, ref, context),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today_outlined),
-            activeIcon: Icon(Icons.calendar_today),
-            label: 'Bookings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.payment_outlined),
-            activeIcon: Icon(Icons.payment),
-            label: 'Payments',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_outlined),
-            activeIcon: Icon(Icons.notifications),
-            label: 'Alerts',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+        onTap: _onTabTapped,
       ),
     );
   }

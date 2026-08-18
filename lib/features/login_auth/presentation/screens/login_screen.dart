@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:fitcoin/core/theme/app_colors.dart';
+import 'package:fitcoin/core/theme/app_text_styles.dart';
+import 'package:fitcoin/core/theme/widgets/starfield_background.dart';
+import 'package:fitcoin/core/theme/widgets/glass_card.dart';
+import 'package:fitcoin/core/theme/widgets/gradient_button.dart';
+// BrandMark is removed – we use an asset image directly.
 import 'package:fitcoin/features/login_auth/presentation/providers/login_providers.dart';
 import 'package:fitcoin/features/login_auth/presentation/states/login_states.dart';
 
@@ -15,12 +21,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _emailFocus = FocusNode();
+  final _passwordFocus = FocusNode();
   bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailFocus.addListener(_onFocusChange);
+    _passwordFocus.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    if (mounted) setState(() {});
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
@@ -53,189 +74,400 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final loginState = ref.watch(loginProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  // ===========================================================================
+  // INPUT FIELD – same as RegisterScreen
+  // ===========================================================================
 
-    final isLoading = loginState is LoginLoading;
-    final errorMessage = loginState is LoginError ? loginState.message : null;
+  Widget _buildField({
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required String hint,
+    required IconData icon,
+    required String? Function(String?) validator,
+    bool obscureText = false,
+    Widget? suffixIcon,
+    TextInputType? keyboardType,
+  }) {
+    final hasFocus = focusNode.hasFocus;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+    final Color activePink =
+    AppColors.primaryPink.withValues(alpha: 0.55);
+    final Color softPink =
+    AppColors.primaryPink.withValues(alpha: 0.24);
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: hasFocus
+            ? [
+          BoxShadow(
+            color: AppColors.primaryPink.withValues(alpha: 0.12),
+            blurRadius: 14,
+            spreadRadius: 1,
+          ),
+        ]
+            : null,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Welcome Back',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Login to your account',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 32),
-
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return 'Email required';
-                    }
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                        .hasMatch(value!)) {
-                      return 'Enter valid email';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                      ),
-                      onPressed: () {
-                        setState(() => _obscurePassword = !_obscurePassword);
-                      },
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return 'Password required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 8),
-
-                // ✅ Forgot Password Link
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      context.push('/forgot-password');
-                    },
-                    child: const Text('Forgot Password?'),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                if (errorMessage != null)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.red.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.error_outline, color: Colors.red),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            errorMessage,
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: isLoading ? null : _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: isLoading
-                        ? const SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                        : const Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account?",
-                      style: TextStyle(
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.go('/register');
-                      },
-                      child: const Text('Register'),
-                    ),
-                  ],
-                ),
-              ],
+      child: CustomPaint(
+        painter: _RandomCornerBorderPainter(
+          color: hasFocus ? activePink : softPink,
+          glowColor: AppColors.primaryPink.withValues(
+            alpha: hasFocus ? 0.20 : 0.09,
+          ),
+          strokeWidth: hasFocus ? 1.35 : 1.0,
+          radius: 16,
+        ),
+        child: GlassCard(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          borderRadius: 16,
+          borderColor: Colors.transparent, // we draw our own border
+          child: TextFormField(
+            controller: controller,
+            focusNode: focusNode,
+            obscureText: obscureText,
+            keyboardType: keyboardType,
+            style: AppTextStyles.inputText,
+            validator: validator,
+            cursorColor: AppColors.primaryPink,
+            decoration: InputDecoration(
+              isDense: true,
+              filled: false,
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
+              hintText: hasFocus ? null : hint,
+              hintStyle: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+              ),
+              prefixIcon: Icon(
+                icon,
+                color: AppColors.primaryPink.withValues(alpha: 0.72),
+                size: 20,
+              ),
+              suffixIcon: suffixIcon,
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
             ),
           ),
         ),
       ),
     );
+  }
+
+  // ===========================================================================
+  // PASSWORD EYE – pink icon
+  // ===========================================================================
+
+  Widget _passwordEye({
+    required bool obscure,
+    required VoidCallback onPressed,
+  }) {
+    return IconButton(
+      splashRadius: 20,
+      icon: Icon(
+        obscure
+            ? Icons.visibility_off_outlined
+            : Icons.visibility_outlined,
+        color: AppColors.primaryPink.withValues(alpha: 0.78),
+        size: 20,
+      ),
+      onPressed: onPressed,
+    );
+  }
+
+  // ===========================================================================
+  // BUILD
+  // ===========================================================================
+
+  @override
+  Widget build(BuildContext context) {
+    final loginState = ref.watch(loginProvider);
+    final isLoading = loginState is LoginLoading;
+    final errorMessage = loginState is LoginError ? loginState.message : null;
+
+    // Logo glow & border (same as RegisterScreen)
+    final glowColor = AppColors.primaryPink.withValues(alpha: 0.24);
+    final borderColor = AppColors.primaryPink.withValues(alpha: 0.42);
+
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: StarfieldBackground(
+        child: Center(
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 12),
+
+                    // =========================================================
+                    // LOGO – asset image (circular with pink glow)
+                    // =========================================================
+                    Center(
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: glowColor,
+                              blurRadius: 25,
+                              spreadRadius: 8,
+                            ),
+                          ],
+                          border: Border.all(
+                            color: borderColor,
+                            width: 3,
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/Logo.jpeg', // update to your path
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // =========================================================
+                    // EMAIL FIELD
+                    // =========================================================
+                    _buildField(
+                      controller: _emailController,
+                      focusNode: _emailFocus,
+                      hint: 'Email Address',
+                      icon: Icons.person_outline,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Email required';
+                        }
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value!)) {
+                          return 'Enter valid email';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    // =========================================================
+                    // PASSWORD FIELD
+                    // =========================================================
+                    _buildField(
+                      controller: _passwordController,
+                      focusNode: _passwordFocus,
+                      hint: 'Password',
+                      icon: Icons.lock_outline,
+                      obscureText: _obscurePassword,
+                      keyboardType: TextInputType.visiblePassword,
+                      suffixIcon: _passwordEye(
+                        obscure: _obscurePassword,
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Password required';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 4),
+
+                    // =========================================================
+                    // ERROR MESSAGE
+                    // =========================================================
+                    if (errorMessage != null) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: AppColors.errorFill,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: AppColors.errorBorder),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.error_outline, color: AppColors.error, size: 20),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                errorMessage,
+                                style: const TextStyle(color: AppColors.error, fontSize: 13),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 20),
+
+                    // =========================================================
+                    // SIGN IN BUTTON
+                    // =========================================================
+                    GradientButton(
+                      label: 'Sign In',
+                      isLoading: isLoading,
+                      onPressed: isLoading ? null : _login,
+                    ),
+                    const SizedBox(height: 20),
+
+                    // =========================================================
+                    // SIGN UP LINK
+                    // =========================================================
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Don't have an account?",
+                          style: AppTextStyles.subheading,
+                        ),
+                        TextButton(
+                          onPressed: () => context.go('/register'),
+                          child: const Text(
+                            'Sign Up',
+                            style: AppTextStyles.linkText,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // =========================================================
+                    // FORGOT PASSWORD – centered
+                    // =========================================================
+                    const SizedBox(height: 4),
+                    Center(
+                      child: TextButton(
+                        onPressed: () => context.push('/forgot-password'),
+                        child: const Text(
+                          'Forgot Password?',
+                          style: AppTextStyles.linkText,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ============================================================================
+// RANDOM CORNER BORDER PAINTER – same as in RegisterScreen
+// ============================================================================
+
+class _RandomCornerBorderPainter extends CustomPainter {
+  final Color color;
+  final Color glowColor;
+  final double strokeWidth;
+  final double radius;
+
+  const _RandomCornerBorderPainter({
+    required this.color,
+    required this.glowColor,
+    required this.strokeWidth,
+    required this.radius,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..color = color;
+
+    final glowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth + 3
+      ..strokeCap = StrokeCap.round
+      ..color = glowColor
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+
+    // Top-left corner
+    final topLeft = Path()
+      ..moveTo(5, radius)
+      ..quadraticBezierTo(5, 5, radius, 5);
+
+    // Top-right corner
+    final topRight = Path()
+      ..moveTo(size.width - radius, 5)
+      ..quadraticBezierTo(size.width - 5, 5, size.width - 5, radius);
+
+    // Bottom-left corner
+    final bottomLeft = Path()
+      ..moveTo(5, size.height - radius)
+      ..quadraticBezierTo(5, size.height - 5, radius, size.height - 5);
+
+    // Bottom-right corner
+    final bottomRight = Path()
+      ..moveTo(size.width - radius, size.height - 5)
+      ..quadraticBezierTo(size.width - 5, size.height - 5, size.width - 5, size.height - radius);
+
+    // Highlight top-left and bottom-right
+    final paths = [topLeft, bottomRight];
+
+    for (final path in paths) {
+      canvas.drawPath(path, glowPaint);
+      canvas.drawPath(path, paint);
+    }
+
+    // Small extra fragments
+    final fragmentPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..color = color.withValues(alpha: 0.65);
+
+    final fragmentGlow = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth + 2
+      ..strokeCap = StrokeCap.round
+      ..color = glowColor.withValues(alpha: 0.65)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+
+    final topRightFragment = Path()
+      ..moveTo(size.width - radius - 8, 5)
+      ..lineTo(size.width - radius + 7, 5);
+
+    final bottomLeftFragment = Path()
+      ..moveTo(5, size.height - radius - 7)
+      ..lineTo(5, size.height - radius + 6);
+
+    canvas.drawPath(topRightFragment, fragmentGlow);
+    canvas.drawPath(topRightFragment, fragmentPaint);
+    canvas.drawPath(bottomLeftFragment, fragmentGlow);
+    canvas.drawPath(bottomLeftFragment, fragmentPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _RandomCornerBorderPainter oldDelegate) {
+    return oldDelegate.color != color ||
+        oldDelegate.glowColor != glowColor ||
+        oldDelegate.strokeWidth != strokeWidth ||
+        oldDelegate.radius != radius;
   }
 }

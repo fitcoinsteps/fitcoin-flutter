@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:fitcoin/core/theme/app_colors.dart';
+import 'package:fitcoin/core/theme/app_text_styles.dart';
+import 'package:fitcoin/core/theme/widgets/starfield_background.dart';
+import 'package:fitcoin/core/theme/widgets/glass_card.dart';
+import 'package:fitcoin/core/theme/widgets/gradient_button.dart';
 import 'package:fitcoin/features/auth/presentation/providers/auth_providers.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -12,12 +18,38 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _phoneController = TextEditingController();
+
+  final _firstNameFocus = FocusNode();
+  final _lastNameFocus = FocusNode();
+  final _emailFocus = FocusNode();
+  final _passwordFocus = FocusNode();
+  final _confirmPasswordFocus = FocusNode();
+
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _firstNameFocus.addListener(_onFocusChange);
+    _lastNameFocus.addListener(_onFocusChange);
+    _emailFocus.addListener(_onFocusChange);
+    _passwordFocus.addListener(_onFocusChange);
+    _confirmPasswordFocus.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   void dispose() {
@@ -26,31 +58,43 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _phoneController.dispose();
+
+    _firstNameFocus.dispose();
+    _lastNameFocus.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    _confirmPasswordFocus.dispose();
+
     super.dispose();
   }
 
-  void _register() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
     final notifier = ref.read(registrationProvider.notifier);
+
     await notifier.register(
       firstName: _firstNameController.text.trim(),
       lastName: _lastNameController.text.trim(),
       email: _emailController.text.trim(),
       password: _passwordController.text,
       passwordConfirmation: _confirmPasswordController.text,
-      phone: _phoneController.text.trim().isNotEmpty
-          ? _phoneController.text.trim()
-          : null,
+      phone: null,
     );
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     final state = ref.read(registrationProvider);
+
     state.when(
       initial: () {},
+
       loading: () {},
+
       success: (response) {
         context.push(
           '/verify-otp',
@@ -60,18 +104,164 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           },
         );
       },
+
       error: (message) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
+          SnackBar(
+            content: Text(message),
+          ),
         );
       },
     );
   }
 
+  // ===========================================================================
+  // INPUT FIELD
+  // ===========================================================================
+
+  Widget _buildField({
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required String hint,
+    required IconData icon,
+    required String? Function(String?) validator,
+    bool obscureText = false,
+    Widget? suffixIcon,
+    TextInputType? keyboardType,
+  }) {
+    final hasFocus = focusNode.hasFocus;
+
+    final Color activePink =
+    AppColors.primaryPink.withValues(alpha: 0.55);
+
+    final Color softPink =
+    AppColors.primaryPink.withValues(alpha: 0.24);
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+
+        // Soft pink shadow when focused.
+        boxShadow: hasFocus
+            ? [
+          BoxShadow(
+            color: AppColors.primaryPink.withValues(
+              alpha: 0.12,
+            ),
+            blurRadius: 14,
+            spreadRadius: 1,
+          ),
+        ]
+            : null,
+      ),
+
+      child: CustomPaint(
+        painter: _RandomCornerBorderPainter(
+          color: hasFocus ? activePink : softPink,
+          glowColor: AppColors.primaryPink.withValues(
+            alpha: hasFocus ? 0.20 : 0.09,
+          ),
+          strokeWidth: hasFocus ? 1.35 : 1.0,
+          radius: 16,
+        ),
+
+        child: GlassCard(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          borderRadius: 16,
+
+          // We draw our own random-corner border.
+          borderColor: Colors.transparent,
+
+          child: TextFormField(
+            controller: controller,
+            focusNode: focusNode,
+            obscureText: obscureText,
+            keyboardType: keyboardType,
+
+            style: AppTextStyles.inputText,
+
+            validator: validator,
+
+            cursorColor: AppColors.primaryPink,
+
+            decoration: InputDecoration(
+              isDense: true,
+
+              filled: false,
+
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 16,
+              ),
+
+              hintText: hasFocus ? null : hint,
+
+              hintStyle: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+              ),
+
+              prefixIcon: Icon(
+                icon,
+                color: AppColors.primaryPink.withValues(
+                  alpha: 0.72,
+                ),
+                size: 20,
+              ),
+
+              suffixIcon: suffixIcon,
+
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ===========================================================================
+  // PASSWORD EYE
+  // ===========================================================================
+
+  Widget _passwordEye({
+    required bool obscure,
+    required VoidCallback onPressed,
+  }) {
+    return IconButton(
+      splashRadius: 20,
+
+      icon: Icon(
+        obscure
+            ? Icons.visibility_off_outlined
+            : Icons.visibility_outlined,
+
+        // Pink eye icon.
+        color: AppColors.primaryPink.withValues(
+          alpha: 0.78,
+        ),
+
+        size: 20,
+      ),
+
+      onPressed: onPressed,
+    );
+  }
+
+  // ===========================================================================
+  // BUILD
+  // ===========================================================================
+
   @override
   Widget build(BuildContext context) {
-    final registrationState = ref.watch(registrationProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final registrationState = ref.watch(
+      registrationProvider,
+    );
 
     final isLoading = registrationState.maybeWhen(
       loading: () => true,
@@ -83,243 +273,557 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       orElse: () => null,
     );
 
+    final glowColor =
+    AppColors.primaryPink.withValues(alpha: 0.24);
+
+    final borderColor =
+    AppColors.primaryPink.withValues(alpha: 0.42);
+
     return Scaffold(
+      extendBodyBehindAppBar: true,
+
       appBar: AppBar(
-        title: const Text('Create Account'),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Join FitCoin',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Create your account to get started',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 32),
 
-                Row(
+      body: StarfieldBackground(
+        child: Center(
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 16,
+              ),
+
+              child: Form(
+                key: _formKey,
+
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment:
+                  CrossAxisAlignment.stretch,
+
                   children: [
-                    Expanded(
-                      child: _buildTextField(
-                        controller: _firstNameController,
-                        label: 'First Name',
-                        icon: Icons.person_outline,
-                        key: const Key('first_name_field'),
-                        validator: (value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'First name required';
-                          }
-                          return null;
+                    const SizedBox(height: 12),
+
+                    // =========================================================
+                    // LOGO
+                    // =========================================================
+
+                    Center(
+                      child: Container(
+                        width: 120,
+                        height: 120,
+
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+
+                          boxShadow: [
+                            BoxShadow(
+                              color: glowColor,
+                              blurRadius: 25,
+                              spreadRadius: 8,
+                            ),
+                          ],
+
+                          border: Border.all(
+                            color: borderColor,
+                            width: 3,
+                          ),
+                        ),
+
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/Logo.jpeg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // =========================================================
+                    // FIRST NAME
+                    // =========================================================
+
+                    _buildField(
+                      controller: _firstNameController,
+                      focusNode: _firstNameFocus,
+                      hint: 'First Name',
+                      icon: Icons.person_outline,
+                      keyboardType: TextInputType.name,
+
+                      validator: (value) {
+                        if (value?.trim().isEmpty ?? true) {
+                          return 'First name required';
+                        }
+
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // =========================================================
+                    // LAST NAME
+                    // =========================================================
+
+                    _buildField(
+                      controller: _lastNameController,
+                      focusNode: _lastNameFocus,
+                      hint: 'Last Name',
+                      icon: Icons.person_outline,
+                      keyboardType: TextInputType.name,
+
+                      validator: (value) {
+                        if (value?.trim().isEmpty ?? true) {
+                          return 'Last name required';
+                        }
+
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // =========================================================
+                    // EMAIL
+                    // =========================================================
+
+                    _buildField(
+                      controller: _emailController,
+                      focusNode: _emailFocus,
+                      hint: 'Email Address',
+                      icon: Icons.email_outlined,
+                      keyboardType:
+                      TextInputType.emailAddress,
+
+                      validator: (value) {
+                        if (value?.trim().isEmpty ?? true) {
+                          return 'Email required';
+                        }
+
+                        if (!RegExp(
+                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        ).hasMatch(value!.trim())) {
+                          return 'Enter valid email';
+                        }
+
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // =========================================================
+                    // PASSWORD
+                    // =========================================================
+
+                    _buildField(
+                      controller: _passwordController,
+                      focusNode: _passwordFocus,
+                      hint: 'Password',
+                      icon: Icons.lock_outline,
+
+                      obscureText: _obscurePassword,
+
+                      keyboardType:
+                      TextInputType.visiblePassword,
+
+                      suffixIcon: _passwordEye(
+                        obscure: _obscurePassword,
+
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword =
+                            !_obscurePassword;
+                          });
                         },
                       ),
+
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Password required';
+                        }
+
+                        if (value!.length < 6) {
+                          return 'Minimum 6 characters';
+                        }
+
+                        return null;
+                      },
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildTextField(
-                        controller: _lastNameController,
-                        label: 'Last Name',
-                        icon: Icons.person_outline,
-                        key: const Key('last_name_field'),
-                        validator: (value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'Last name required';
-                          }
-                          return null;
+
+                    const SizedBox(height: 16),
+
+                    // =========================================================
+                    // CONFIRM PASSWORD
+                    // =========================================================
+
+                    _buildField(
+                      controller:
+                      _confirmPasswordController,
+
+                      focusNode:
+                      _confirmPasswordFocus,
+
+                      hint: 'Confirm Password',
+
+                      icon: Icons.lock_outline,
+
+                      obscureText:
+                      _obscureConfirmPassword,
+
+                      keyboardType:
+                      TextInputType.visiblePassword,
+
+                      suffixIcon: _passwordEye(
+                        obscure:
+                        _obscureConfirmPassword,
+
+                        onPressed: () {
+                          setState(() {
+                            _obscureConfirmPassword =
+                            !_obscureConfirmPassword;
+                          });
                         },
                       ),
+
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Confirm password';
+                        }
+
+                        if (value !=
+                            _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+
+                        return null;
+                      },
                     ),
-                  ],
-                ),
-                const SizedBox(height: 16),
 
-                _buildTextField(
-                  controller: _emailController,
-                  label: 'Email',
-                  icon: Icons.email_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                  key: const Key('email_field'),
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return 'Email required';
-                    }
-                    if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    ).hasMatch(value!)) {
-                      return 'Enter valid email';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
+                    const SizedBox(height: 4),
 
-                _buildTextField(
-                  controller: _phoneController,
-                  label: 'Phone (optional)',
-                  icon: Icons.phone_outlined,
-                  keyboardType: TextInputType.phone,
-                  validator: null,
-                ),
-                const SizedBox(height: 16),
+                    // =========================================================
+                    // ERROR
+                    // =========================================================
 
-                _buildTextField(
-                  controller: _passwordController,
-                  label: 'Password',
-                  icon: Icons.lock_outline,
-                  obscureText: true,
-                  key: const Key('password_field'),
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return 'Password required';
-                    }
-                    if ((value?.length ?? 0) < 6) {
-                      return 'Min 6 characters';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
+                    if (errorMessage != null) ...[
+                      const SizedBox(height: 8),
 
-                _buildTextField(
-                  controller: _confirmPasswordController,
-                  label: 'Confirm Password',
-                  icon: Icons.lock_outline,
-                  obscureText: true,
-                  key: const Key('confirm_password_field'),
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return 'Confirm password';
-                    }
-                    if (value != _passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
+                      Container(
+                        padding:
+                        const EdgeInsets.all(14),
 
-                if (errorMessage != null)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.red.withValues(alpha: 0.3),
+                        decoration: BoxDecoration(
+                          color: AppColors.errorFill,
+
+                          borderRadius:
+                          BorderRadius.circular(14),
+
+                          border: Border.all(
+                            color: AppColors.errorBorder,
+                          ),
+                        ),
+
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.error_outline,
+                              color: AppColors.error,
+                              size: 20,
+                            ),
+
+                            const SizedBox(width: 10),
+
+                            Expanded(
+                              child: Text(
+                                errorMessage,
+
+                                style:
+                                const TextStyle(
+                                  color:
+                                  AppColors.error,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                    ],
+
+                    const SizedBox(height: 20),
+
+                    // =========================================================
+                    // REGISTER
+                    // =========================================================
+
+                    GradientButton(
+                      label: 'Sign Up',
+
+                      isLoading: isLoading,
+
+                      onPressed:
+                      isLoading ? null : _register,
                     ),
-                    child: Row(
+
+                    const SizedBox(height: 20),
+
+                    // =========================================================
+                    // LOGIN
+                    // =========================================================
+
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.center,
+
                       children: [
-                        const Icon(Icons.error_outline, color: Colors.red),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            errorMessage,
-                            style: const TextStyle(color: Colors.red),
+                        const Text(
+                          'Already have an account?',
+                          style:
+                          AppTextStyles.subheading,
+                        ),
+
+                        TextButton(
+                          onPressed: () {
+                            context.go('/login');
+                          },
+
+                          child: const Text(
+                            'Sign In',
+                            style:
+                            AppTextStyles.linkText,
                           ),
                         ),
                       ],
                     ),
-                  ),
 
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    key: const Key('create_account_button'),
-                    onPressed: isLoading ? null : _register,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: isLoading
-                        ? const SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                        : const Text(
-                      'Create Account',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account?',
-                      style: TextStyle(
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.go('/login'); // ✅ Fixed: Navigate to login
-                      },
-                      child: const Text('Sign In'),
-                    ),
+                    const SizedBox(height: 8),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    bool obscureText = false,
-    TextInputType? keyboardType,
-    Key? key,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      key: key,
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        filled: true,
-        fillColor: Colors.transparent,
-      ),
+// ============================================================================
+// RANDOM CORNER BORDER
+// ============================================================================
+//
+// This creates a glass border where only selected portions of the corners
+// receive the pink accent.
+//
+// It deliberately does NOT draw a complete pink border.
+//
+// Each field gets the same deterministic pattern, so it remains stable
+// instead of changing every frame.
+//
+
+class _RandomCornerBorderPainter
+    extends CustomPainter {
+  final Color color;
+  final Color glowColor;
+  final double strokeWidth;
+  final double radius;
+
+  const _RandomCornerBorderPainter({
+    required this.color,
+    required this.glowColor,
+    required this.strokeWidth,
+    required this.radius,
+  });
+
+  @override
+  void paint(
+      Canvas canvas,
+      Size size,
+      ) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..color = color;
+
+    final glowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth + 3
+      ..strokeCap = StrokeCap.round
+      ..color = glowColor
+      ..maskFilter = const MaskFilter.blur(
+        BlurStyle.normal,
+        5,
+      );
+
+    // ==========================================================
+    // TOP LEFT
+    // ==========================================================
+
+    final topLeft = Path()
+      ..moveTo(5, radius)
+      ..quadraticBezierTo(
+        5,
+        5,
+        radius,
+        5,
+      );
+
+    // ==========================================================
+    // TOP RIGHT
+    // ==========================================================
+
+    final topRight = Path()
+      ..moveTo(
+        size.width - radius,
+        5,
+      )
+      ..quadraticBezierTo(
+        size.width - 5,
+        5,
+        size.width - 5,
+        radius,
+      );
+
+    // ==========================================================
+    // BOTTOM LEFT
+    // ==========================================================
+
+    final bottomLeft = Path()
+      ..moveTo(
+        5,
+        size.height - radius,
+      )
+      ..quadraticBezierTo(
+        5,
+        size.height - 5,
+        radius,
+        size.height - 5,
+      );
+
+    // ==========================================================
+    // BOTTOM RIGHT
+    // ==========================================================
+
+    final bottomRight = Path()
+      ..moveTo(
+        size.width - radius,
+        size.height - 5,
+      )
+      ..quadraticBezierTo(
+        size.width - 5,
+        size.height - 5,
+        size.width - 5,
+        size.height - radius,
+      );
+
+    // ==========================================================
+    // RANDOM-LOOKING SELECTION
+    // ==========================================================
+    //
+    // Not every corner gets pink.
+    //
+    // Top-left + bottom-right are highlighted.
+    // Top-right and bottom-left stay mostly glass.
+    //
+    // Short sections are added around the corners to make the
+    // effect feel less like a normal rectangular border.
+    //
+
+    final paths = [
+      topLeft,
+      bottomRight,
+    ];
+
+    for (final path in paths) {
+      canvas.drawPath(
+        path,
+        glowPaint,
+      );
+
+      canvas.drawPath(
+        path,
+        paint,
+      );
+    }
+
+    // Small additional fragments.
+    //
+    // These make the border feel irregular rather than like
+    // two complete highlighted corners.
+
+    final fragmentPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..color = color.withValues(alpha: 0.65);
+
+    final fragmentGlow = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth + 2
+      ..strokeCap = StrokeCap.round
+      ..color = glowColor.withValues(alpha: 0.65)
+      ..maskFilter = const MaskFilter.blur(
+        BlurStyle.normal,
+        4,
+      );
+
+    // Small top-right fragment.
+    final topRightFragment = Path()
+      ..moveTo(
+        size.width - radius - 8,
+        5,
+      )
+      ..lineTo(
+        size.width - radius + 7,
+        5,
+      );
+
+    // Small bottom-left fragment.
+    final bottomLeftFragment = Path()
+      ..moveTo(
+        5,
+        size.height - radius - 7,
+      )
+      ..lineTo(
+        5,
+        size.height - radius + 6,
+      );
+
+    canvas.drawPath(
+      topRightFragment,
+      fragmentGlow,
     );
+
+    canvas.drawPath(
+      topRightFragment,
+      fragmentPaint,
+    );
+
+    canvas.drawPath(
+      bottomLeftFragment,
+      fragmentGlow,
+    );
+
+    canvas.drawPath(
+      bottomLeftFragment,
+      fragmentPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(
+      covariant _RandomCornerBorderPainter oldDelegate,
+      ) {
+    return oldDelegate.color != color ||
+        oldDelegate.glowColor != glowColor ||
+        oldDelegate.strokeWidth != strokeWidth ||
+        oldDelegate.radius != radius;
   }
 }
