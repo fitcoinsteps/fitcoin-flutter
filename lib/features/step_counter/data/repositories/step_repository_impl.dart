@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as Math;
 import 'package:dartz/dartz.dart';
 import 'package:fitcoin/core/error/failures.dart';
 import 'package:fitcoin/features/step_counter/domain/entities/step_data.dart';
@@ -26,23 +25,50 @@ class StepRepositoryImpl implements StepRepository {
   @override
   Future<Either<Failure, StepData>> getTodaySteps() async {
     try {
+      // 1. Load local steps first (these may be unsynced)
       final local = await localSource.getTodaySteps();
-      if (local != null) {
-        return Right(local);
-      } else {
-        try {
-          final remote = await remoteSource.getTodaySteps();
-          await localSource.saveTodaySteps(remote.steps, goal: remote.goal);
-          return Right(remote);
-        } catch (_) {
-          final defaultData = StepDataModel(
-            steps: 0,
-            goal: 10000,
-            date: DateTime.now(),
-          );
-          return Right(defaultData);
-        }
+      print('🔄 Local steps: ${local?.steps}');
+
+      // 2. Try to fetch remote steps (may fail)
+      StepData? remote;
+      try {
+        remote = await remoteSource.getTodaySteps();
+        print('✅ Remote steps: ${remote?.steps}');
+      } catch (e) {
+        print('❌ Remote fetch failed, using local only');
       }
+
+      // 3. Determine final values (take max)
+      int finalSteps = 0;
+      int goal = 10000;
+      DateTime date = DateTime.now();
+
+      if (local != null) {
+        finalSteps = local.steps;
+        goal = local.goal;
+        date = local.date;
+      }
+      if (remote != null && remote.steps > finalSteps) {
+        finalSteps = remote.steps;
+        goal = remote.goal;
+        date = remote.date;
+      }
+
+      // 4. If local steps > remote, push local to backend
+      if (local != null && (remote == null || local.steps > remote.steps)) {
+        print('🔄 Local steps greater than remote, syncing local to remote...');
+        await remoteSource.syncSteps(local);
+      }
+
+      // 5. Save merged result locally
+      final merged = StepDataModel(
+        steps: finalSteps,
+        goal: goal,
+        date: DateTime.now(),
+      );
+      await localSource.saveTodaySteps(merged.steps, goal: merged.goal);
+
+      return Right(merged);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }
@@ -68,6 +94,20 @@ class StepRepositoryImpl implements StepRepository {
       );
       final synced = await remoteSource.syncSteps(model);
       return Right(synced);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateGoal(int goal) async {
+    try {
+      await remoteSource.updateGoal(goal);
+      final local = await localSource.getTodaySteps();
+      if (local != null) {
+        await localSource.saveTodaySteps(local.steps, goal: goal);
+      }
+      return const Right(null);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }

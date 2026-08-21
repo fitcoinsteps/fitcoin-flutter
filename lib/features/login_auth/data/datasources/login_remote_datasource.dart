@@ -17,8 +17,9 @@ class LoginRemoteDataSource {
       if (response.statusCode == 200) {
         final loginResponse = LoginResponse.fromJson(response.data);
 
-        // Cache token - remove await if cacheToken is void
-        cacheService.cacheToken(loginResponse.accessToken);
+        CacheService.cacheToken(loginResponse.accessToken);
+        CacheService.cacheRefreshToken(loginResponse.refreshToken);
+        CacheService.cacheTokenExpiry(loginResponse.expiresIn);
 
         return loginResponse;
       } else {
@@ -27,11 +28,28 @@ class LoginRemoteDataSource {
         );
       }
     } on DioException catch (e) {
-      throw Exception(
-        e.response?.data['error'] ??
-            e.response?.data['message'] ??
-            'Login failed',
-      );
+      throw Exception(_mapDioErrorToUserMessage(e));
     }
+  }
+
+  String _mapDioErrorToUserMessage(DioException e) {
+    final statusCode = e.response?.statusCode;
+
+    if (statusCode == 403) {
+      final backendError = e.response?.data['error'] ?? '';
+      if (backendError == 'This account type is not allowed to use this login method.') {
+        return 'Permission denied';   // very short message
+      }
+      return 'Access denied';
+    }
+
+    final data = e.response?.data;
+    if (data is Map && data.containsKey('error')) {
+      return data['error'] as String;
+    }
+    if (data is Map && data.containsKey('message')) {
+      return data['message'] as String;
+    }
+    return 'Login failed';
   }
 }

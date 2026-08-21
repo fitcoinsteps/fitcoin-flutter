@@ -1,4 +1,13 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
 part of 'auth_states.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
 
 T _$identity<T>(T value) => value;
 
@@ -6,6 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
   'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
 );
 
+/// @nodoc
 mixin _$RegistrationState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
@@ -14,7 +24,6 @@ mixin _$RegistrationState {
     required TResult Function(RegistrationResponse response) success,
     required TResult Function(String message) error,
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
@@ -22,20 +31,14 @@ mixin _$RegistrationState {
     TResult? Function(RegistrationResponse response)? success,
     TResult? Function(String message)? error,
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-
     TResult Function()? loading,
-
     TResult Function(RegistrationResponse response)? success,
-
     TResult Function(String message)? error,
-
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_RegistrationInitial value) initial,
@@ -43,7 +46,6 @@ mixin _$RegistrationState {
     required TResult Function(_RegistrationSuccess value) success,
     required TResult Function(_RegistrationError value) error,
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_RegistrationInitial value)? initial,
@@ -51,7 +53,6 @@ mixin _$RegistrationState {
     TResult? Function(_RegistrationSuccess value)? success,
     TResult? Function(_RegistrationError value)? error,
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_RegistrationInitial value)? initial,
@@ -62,6 +63,7 @@ mixin _$RegistrationState {
   }) => throw _privateConstructorUsedError;
 }
 
+/// @nodoc
 abstract class $RegistrationStateCopyWith<$Res> {
   factory $RegistrationStateCopyWith(
     RegistrationState value,
@@ -69,14 +71,21 @@ abstract class $RegistrationStateCopyWith<$Res> {
   ) = _$RegistrationStateCopyWithImpl<$Res, RegistrationState>;
 }
 
+/// @nodoc
 class _$RegistrationStateCopyWithImpl<$Res, $Val extends RegistrationState>
     implements $RegistrationStateCopyWith<$Res> {
   _$RegistrationStateCopyWithImpl(this._value, this._then);
 
+  // ignore: unused_field
   final $Val _value;
+  // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
+/// @nodoc
 abstract class _$$RegistrationInitialImplCopyWith<$Res> {
   factory _$$RegistrationInitialImplCopyWith(
     _$RegistrationInitialImpl value,
@@ -84,6 +93,7 @@ abstract class _$$RegistrationInitialImplCopyWith<$Res> {
   ) = __$$RegistrationInitialImplCopyWithImpl<$Res>;
 }
 
+/// @nodoc
 class __$$RegistrationInitialImplCopyWithImpl<$Res>
     extends _$RegistrationStateCopyWithImpl<$Res, _$RegistrationInitialImpl>
     implements _$$RegistrationInitialImplCopyWith<$Res> {
@@ -91,7 +101,12 @@ class __$$RegistrationInitialImplCopyWithImpl<$Res>
     _$RegistrationInitialImpl _value,
     $Res Function(_$RegistrationInitialImpl) _then,
   ) : super(_value, _then);
+
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
 }
+
+/// @nodoc
 
 class _$RegistrationInitialImpl implements _RegistrationInitial {
   const _$RegistrationInitialImpl();
@@ -190,6 +205,7 @@ abstract class _RegistrationInitial implements RegistrationState {
   const factory _RegistrationInitial() = _$RegistrationInitialImpl;
 }
 
+/// @nodoc
 abstract class _$$RegistrationLoadingImplCopyWith<$Res> {
   factory _$$RegistrationLoadingImplCopyWith(
     _$RegistrationLoadingImpl value,
@@ -197,6 +213,7 @@ abstract class _$$RegistrationLoadingImplCopyWith<$Res> {
   ) = __$$RegistrationLoadingImplCopyWithImpl<$Res>;
 }
 
+/// @nodoc
 class __$$RegistrationLoadingImplCopyWithImpl<$Res>
     extends _$RegistrationStateCopyWithImpl<$Res, _$RegistrationLoadingImpl>
     implements _$$RegistrationLoadingImplCopyWith<$Res> {
@@ -204,7 +221,12 @@ class __$$RegistrationLoadingImplCopyWithImpl<$Res>
     _$RegistrationLoadingImpl _value,
     $Res Function(_$RegistrationLoadingImpl) _then,
   ) : super(_value, _then);
+
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
 }
+
+/// @nodoc
 
 class _$RegistrationLoadingImpl implements _RegistrationLoading {
   const _$RegistrationLoadingImpl();
@@ -303,16 +325,17 @@ abstract class _RegistrationLoading implements RegistrationState {
   const factory _RegistrationLoading() = _$RegistrationLoadingImpl;
 }
 
+/// @nodoc
 abstract class _$$RegistrationSuccessImplCopyWith<$Res> {
   factory _$$RegistrationSuccessImplCopyWith(
     _$RegistrationSuccessImpl value,
     $Res Function(_$RegistrationSuccessImpl) then,
   ) = __$$RegistrationSuccessImplCopyWithImpl<$Res>;
-
   @useResult
   $Res call({RegistrationResponse response});
 }
 
+/// @nodoc
 class __$$RegistrationSuccessImplCopyWithImpl<$Res>
     extends _$RegistrationStateCopyWithImpl<$Res, _$RegistrationSuccessImpl>
     implements _$$RegistrationSuccessImplCopyWith<$Res> {
@@ -321,6 +344,8 @@ class __$$RegistrationSuccessImplCopyWithImpl<$Res>
     $Res Function(_$RegistrationSuccessImpl) _then,
   ) : super(_value, _then);
 
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({Object? response = null}) {
@@ -328,11 +353,14 @@ class __$$RegistrationSuccessImplCopyWithImpl<$Res>
       _$RegistrationSuccessImpl(
         response: null == response
             ? _value.response
-            : response as RegistrationResponse,
+            : response // ignore: cast_nullable_to_non_nullable
+                  as RegistrationResponse,
       ),
     );
   }
 }
+
+/// @nodoc
 
 class _$RegistrationSuccessImpl implements _RegistrationSuccess {
   const _$RegistrationSuccessImpl({required this.response});
@@ -357,6 +385,8 @@ class _$RegistrationSuccessImpl implements _RegistrationSuccess {
   @override
   int get hashCode => Object.hash(runtimeType, response);
 
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
@@ -448,21 +478,24 @@ abstract class _RegistrationSuccess implements RegistrationState {
 
   RegistrationResponse get response;
 
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RegistrationSuccessImplCopyWith<_$RegistrationSuccessImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
+/// @nodoc
 abstract class _$$RegistrationErrorImplCopyWith<$Res> {
   factory _$$RegistrationErrorImplCopyWith(
     _$RegistrationErrorImpl value,
     $Res Function(_$RegistrationErrorImpl) then,
   ) = __$$RegistrationErrorImplCopyWithImpl<$Res>;
-
   @useResult
   $Res call({String message});
 }
 
+/// @nodoc
 class __$$RegistrationErrorImplCopyWithImpl<$Res>
     extends _$RegistrationStateCopyWithImpl<$Res, _$RegistrationErrorImpl>
     implements _$$RegistrationErrorImplCopyWith<$Res> {
@@ -471,16 +504,23 @@ class __$$RegistrationErrorImplCopyWithImpl<$Res>
     $Res Function(_$RegistrationErrorImpl) _then,
   ) : super(_value, _then);
 
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({Object? message = null}) {
     return _then(
       _$RegistrationErrorImpl(
-        message: null == message ? _value.message : message as String,
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
       ),
     );
   }
 }
+
+/// @nodoc
 
 class _$RegistrationErrorImpl implements _RegistrationError {
   const _$RegistrationErrorImpl({required this.message});
@@ -504,6 +544,8 @@ class _$RegistrationErrorImpl implements _RegistrationError {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
@@ -594,37 +636,37 @@ abstract class _RegistrationError implements RegistrationState {
 
   String get message;
 
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RegistrationErrorImplCopyWith<_$RegistrationErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
+/// @nodoc
 mixin _$OtpVerificationState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(UserEntity user) success,
+    required TResult Function(OtpVerificationResult result) success,
     required TResult Function(String message) error,
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(UserEntity user)? success,
+    TResult? Function(OtpVerificationResult result)? success,
     TResult? Function(String message)? error,
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(UserEntity user)? success,
+    TResult Function(OtpVerificationResult result)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_OtpVerificationInitial value) initial,
@@ -632,7 +674,6 @@ mixin _$OtpVerificationState {
     required TResult Function(_OtpVerificationSuccess value) success,
     required TResult Function(_OtpVerificationError value) error,
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_OtpVerificationInitial value)? initial,
@@ -640,7 +681,6 @@ mixin _$OtpVerificationState {
     TResult? Function(_OtpVerificationSuccess value)? success,
     TResult? Function(_OtpVerificationError value)? error,
   }) => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_OtpVerificationInitial value)? initial,
@@ -651,6 +691,7 @@ mixin _$OtpVerificationState {
   }) => throw _privateConstructorUsedError;
 }
 
+/// @nodoc
 abstract class $OtpVerificationStateCopyWith<$Res> {
   factory $OtpVerificationStateCopyWith(
     OtpVerificationState value,
@@ -658,6 +699,7 @@ abstract class $OtpVerificationStateCopyWith<$Res> {
   ) = _$OtpVerificationStateCopyWithImpl<$Res, OtpVerificationState>;
 }
 
+/// @nodoc
 class _$OtpVerificationStateCopyWithImpl<
   $Res,
   $Val extends OtpVerificationState
@@ -665,10 +707,16 @@ class _$OtpVerificationStateCopyWithImpl<
     implements $OtpVerificationStateCopyWith<$Res> {
   _$OtpVerificationStateCopyWithImpl(this._value, this._then);
 
+  // ignore: unused_field
   final $Val _value;
+  // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of OtpVerificationState
+  /// with the given fields replaced by the non-null parameter values.
 }
 
+/// @nodoc
 abstract class _$$OtpVerificationInitialImplCopyWith<$Res> {
   factory _$$OtpVerificationInitialImplCopyWith(
     _$OtpVerificationInitialImpl value,
@@ -676,6 +724,7 @@ abstract class _$$OtpVerificationInitialImplCopyWith<$Res> {
   ) = __$$OtpVerificationInitialImplCopyWithImpl<$Res>;
 }
 
+/// @nodoc
 class __$$OtpVerificationInitialImplCopyWithImpl<$Res>
     extends
         _$OtpVerificationStateCopyWithImpl<$Res, _$OtpVerificationInitialImpl>
@@ -684,7 +733,12 @@ class __$$OtpVerificationInitialImplCopyWithImpl<$Res>
     _$OtpVerificationInitialImpl _value,
     $Res Function(_$OtpVerificationInitialImpl) _then,
   ) : super(_value, _then);
+
+  /// Create a copy of OtpVerificationState
+  /// with the given fields replaced by the non-null parameter values.
 }
+
+/// @nodoc
 
 class _$OtpVerificationInitialImpl implements _OtpVerificationInitial {
   const _$OtpVerificationInitialImpl();
@@ -709,7 +763,7 @@ class _$OtpVerificationInitialImpl implements _OtpVerificationInitial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(UserEntity user) success,
+    required TResult Function(OtpVerificationResult result) success,
     required TResult Function(String message) error,
   }) {
     return initial();
@@ -720,7 +774,7 @@ class _$OtpVerificationInitialImpl implements _OtpVerificationInitial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(UserEntity user)? success,
+    TResult? Function(OtpVerificationResult result)? success,
     TResult? Function(String message)? error,
   }) {
     return initial?.call();
@@ -731,7 +785,7 @@ class _$OtpVerificationInitialImpl implements _OtpVerificationInitial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(UserEntity user)? success,
+    TResult Function(OtpVerificationResult result)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -783,6 +837,7 @@ abstract class _OtpVerificationInitial implements OtpVerificationState {
   const factory _OtpVerificationInitial() = _$OtpVerificationInitialImpl;
 }
 
+/// @nodoc
 abstract class _$$OtpVerificationLoadingImplCopyWith<$Res> {
   factory _$$OtpVerificationLoadingImplCopyWith(
     _$OtpVerificationLoadingImpl value,
@@ -790,6 +845,7 @@ abstract class _$$OtpVerificationLoadingImplCopyWith<$Res> {
   ) = __$$OtpVerificationLoadingImplCopyWithImpl<$Res>;
 }
 
+/// @nodoc
 class __$$OtpVerificationLoadingImplCopyWithImpl<$Res>
     extends
         _$OtpVerificationStateCopyWithImpl<$Res, _$OtpVerificationLoadingImpl>
@@ -798,7 +854,12 @@ class __$$OtpVerificationLoadingImplCopyWithImpl<$Res>
     _$OtpVerificationLoadingImpl _value,
     $Res Function(_$OtpVerificationLoadingImpl) _then,
   ) : super(_value, _then);
+
+  /// Create a copy of OtpVerificationState
+  /// with the given fields replaced by the non-null parameter values.
 }
+
+/// @nodoc
 
 class _$OtpVerificationLoadingImpl implements _OtpVerificationLoading {
   const _$OtpVerificationLoadingImpl();
@@ -823,7 +884,7 @@ class _$OtpVerificationLoadingImpl implements _OtpVerificationLoading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(UserEntity user) success,
+    required TResult Function(OtpVerificationResult result) success,
     required TResult Function(String message) error,
   }) {
     return loading();
@@ -834,7 +895,7 @@ class _$OtpVerificationLoadingImpl implements _OtpVerificationLoading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(UserEntity user)? success,
+    TResult? Function(OtpVerificationResult result)? success,
     TResult? Function(String message)? error,
   }) {
     return loading?.call();
@@ -845,7 +906,7 @@ class _$OtpVerificationLoadingImpl implements _OtpVerificationLoading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(UserEntity user)? success,
+    TResult Function(OtpVerificationResult result)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -897,16 +958,17 @@ abstract class _OtpVerificationLoading implements OtpVerificationState {
   const factory _OtpVerificationLoading() = _$OtpVerificationLoadingImpl;
 }
 
+/// @nodoc
 abstract class _$$OtpVerificationSuccessImplCopyWith<$Res> {
   factory _$$OtpVerificationSuccessImplCopyWith(
     _$OtpVerificationSuccessImpl value,
     $Res Function(_$OtpVerificationSuccessImpl) then,
   ) = __$$OtpVerificationSuccessImplCopyWithImpl<$Res>;
-
   @useResult
-  $Res call({UserEntity user});
+  $Res call({OtpVerificationResult result});
 }
 
+/// @nodoc
 class __$$OtpVerificationSuccessImplCopyWithImpl<$Res>
     extends
         _$OtpVerificationStateCopyWithImpl<$Res, _$OtpVerificationSuccessImpl>
@@ -916,26 +978,33 @@ class __$$OtpVerificationSuccessImplCopyWithImpl<$Res>
     $Res Function(_$OtpVerificationSuccessImpl) _then,
   ) : super(_value, _then);
 
+  /// Create a copy of OtpVerificationState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? user = null}) {
+  $Res call({Object? result = null}) {
     return _then(
       _$OtpVerificationSuccessImpl(
-        user: null == user ? _value.user : user as UserEntity,
+        result: null == result
+            ? _value.result
+            : result // ignore: cast_nullable_to_non_nullable
+                  as OtpVerificationResult,
       ),
     );
   }
 }
 
+/// @nodoc
+
 class _$OtpVerificationSuccessImpl implements _OtpVerificationSuccess {
-  const _$OtpVerificationSuccessImpl({required this.user});
+  const _$OtpVerificationSuccessImpl({required this.result});
 
   @override
-  final UserEntity user;
+  final OtpVerificationResult result;
 
   @override
   String toString() {
-    return 'OtpVerificationState.success(user: $user)';
+    return 'OtpVerificationState.success(result: $result)';
   }
 
   @override
@@ -943,12 +1012,14 @@ class _$OtpVerificationSuccessImpl implements _OtpVerificationSuccess {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OtpVerificationSuccessImpl &&
-            (identical(other.user, user) || other.user == user));
+            (identical(other.result, result) || other.result == result));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, user);
+  int get hashCode => Object.hash(runtimeType, result);
 
+  /// Create a copy of OtpVerificationState
+  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
@@ -964,10 +1035,10 @@ class _$OtpVerificationSuccessImpl implements _OtpVerificationSuccess {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(UserEntity user) success,
+    required TResult Function(OtpVerificationResult result) success,
     required TResult Function(String message) error,
   }) {
-    return success(user);
+    return success(result);
   }
 
   @override
@@ -975,10 +1046,10 @@ class _$OtpVerificationSuccessImpl implements _OtpVerificationSuccess {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(UserEntity user)? success,
+    TResult? Function(OtpVerificationResult result)? success,
     TResult? Function(String message)? error,
   }) {
-    return success?.call(user);
+    return success?.call(result);
   }
 
   @override
@@ -986,12 +1057,12 @@ class _$OtpVerificationSuccessImpl implements _OtpVerificationSuccess {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(UserEntity user)? success,
+    TResult Function(OtpVerificationResult result)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(user);
+      return success(result);
     }
     return orElse();
   }
@@ -1035,26 +1106,30 @@ class _$OtpVerificationSuccessImpl implements _OtpVerificationSuccess {
 }
 
 abstract class _OtpVerificationSuccess implements OtpVerificationState {
-  const factory _OtpVerificationSuccess({required final UserEntity user}) =
-      _$OtpVerificationSuccessImpl;
+  const factory _OtpVerificationSuccess({
+    required final OtpVerificationResult result,
+  }) = _$OtpVerificationSuccessImpl;
 
-  UserEntity get user;
+  OtpVerificationResult get result;
 
+  /// Create a copy of OtpVerificationState
+  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OtpVerificationSuccessImplCopyWith<_$OtpVerificationSuccessImpl>
   get copyWith => throw _privateConstructorUsedError;
 }
 
+/// @nodoc
 abstract class _$$OtpVerificationErrorImplCopyWith<$Res> {
   factory _$$OtpVerificationErrorImplCopyWith(
     _$OtpVerificationErrorImpl value,
     $Res Function(_$OtpVerificationErrorImpl) then,
   ) = __$$OtpVerificationErrorImplCopyWithImpl<$Res>;
-
   @useResult
   $Res call({String message});
 }
 
+/// @nodoc
 class __$$OtpVerificationErrorImplCopyWithImpl<$Res>
     extends _$OtpVerificationStateCopyWithImpl<$Res, _$OtpVerificationErrorImpl>
     implements _$$OtpVerificationErrorImplCopyWith<$Res> {
@@ -1063,16 +1138,23 @@ class __$$OtpVerificationErrorImplCopyWithImpl<$Res>
     $Res Function(_$OtpVerificationErrorImpl) _then,
   ) : super(_value, _then);
 
+  /// Create a copy of OtpVerificationState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({Object? message = null}) {
     return _then(
       _$OtpVerificationErrorImpl(
-        message: null == message ? _value.message : message as String,
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
       ),
     );
   }
 }
+
+/// @nodoc
 
 class _$OtpVerificationErrorImpl implements _OtpVerificationError {
   const _$OtpVerificationErrorImpl({required this.message});
@@ -1096,6 +1178,8 @@ class _$OtpVerificationErrorImpl implements _OtpVerificationError {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
+  /// Create a copy of OtpVerificationState
+  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
@@ -1111,7 +1195,7 @@ class _$OtpVerificationErrorImpl implements _OtpVerificationError {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(UserEntity user) success,
+    required TResult Function(OtpVerificationResult result) success,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -1122,7 +1206,7 @@ class _$OtpVerificationErrorImpl implements _OtpVerificationError {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(UserEntity user)? success,
+    TResult? Function(OtpVerificationResult result)? success,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -1133,7 +1217,7 @@ class _$OtpVerificationErrorImpl implements _OtpVerificationError {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(UserEntity user)? success,
+    TResult Function(OtpVerificationResult result)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -1187,6 +1271,8 @@ abstract class _OtpVerificationError implements OtpVerificationState {
 
   String get message;
 
+  /// Create a copy of OtpVerificationState
+  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OtpVerificationErrorImplCopyWith<_$OtpVerificationErrorImpl>
   get copyWith => throw _privateConstructorUsedError;

@@ -31,4 +31,22 @@ class StepLocalSource {
     await prefs.setInt(_stepsKey, steps);
     await prefs.setInt(_goalKey, goal);
   }
+
+  /// Clear ALL locally stored step data (use on logout/account deletion)
+  Future<void> clearAll() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Remove known keys
+    await prefs.remove(_stepsKey);
+    await prefs.remove(_goalKey);
+    await prefs.remove(_dateKey);
+
+    // 🔥 Extra safety: remove any other key that contains 'step' (case-insensitive)
+    final allKeys = prefs.getKeys();
+    for (final key in allKeys) {
+      if (key.toLowerCase().contains('step')) {
+        await prefs.remove(key);
+      }
+    }
+  }
 }

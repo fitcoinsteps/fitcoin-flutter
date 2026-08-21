@@ -22,7 +22,7 @@ class RegisterRequest {
       'email': email,
       'password': password,
       'password_confirmation': passwordConfirmation,
-      'phone': phone,
+      if (phone != null) 'phone': phone,
     };
   }
 }

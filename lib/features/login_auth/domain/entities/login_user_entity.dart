@@ -6,7 +6,7 @@ class LoginUserEntity {
   final String lastName;
   final String email;
   final bool isActive;
-  final List<String> roles;
+  final String role;  // <-- changed from roles list to role string
 
   LoginUserEntity({
     required this.id,
@@ -16,6 +16,6 @@ class LoginUserEntity {
     required this.lastName,
     required this.email,
     required this.isActive,
-    required this.roles,
+    required this.role,
   });
 }

@@ -6,7 +6,6 @@ import 'package:fitcoin/core/theme/app_text_styles.dart';
 import 'package:fitcoin/core/theme/widgets/starfield_background.dart';
 import 'package:fitcoin/core/theme/widgets/glass_card.dart';
 import 'package:fitcoin/core/theme/widgets/gradient_button.dart';
-// BrandMark is removed – we use an asset image directly.
 import 'package:fitcoin/features/login_auth/presentation/providers/login_providers.dart';
 import 'package:fitcoin/features/login_auth/presentation/states/login_states.dart';
 
@@ -64,19 +63,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         break;
       case LoginSuccess(:final response):
         debugPrint('✅ Login successful: ${response.user.firstName}');
-        context.go('/');
+        context.go('/home');
         break;
       case LoginError(:final message):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+      // Inline error already displayed in build method.
         break;
     }
   }
-
-  // ===========================================================================
-  // INPUT FIELD – same as RegisterScreen
-  // ===========================================================================
 
   Widget _buildField({
     required TextEditingController controller,
@@ -120,7 +113,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: GlassCard(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           borderRadius: 16,
-          borderColor: Colors.transparent, // we draw our own border
+          borderColor: Colors.transparent,
           child: TextFormField(
             controller: controller,
             focusNode: focusNode,
@@ -157,10 +150,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  // ===========================================================================
-  // PASSWORD EYE – pink icon
-  // ===========================================================================
-
   Widget _passwordEye({
     required bool obscure,
     required VoidCallback onPressed,
@@ -178,17 +167,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  // ===========================================================================
-  // BUILD
-  // ===========================================================================
-
   @override
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginProvider);
     final isLoading = loginState is LoginLoading;
     final errorMessage = loginState is LoginError ? loginState.message : null;
 
-    // Logo glow & border (same as RegisterScreen)
     final glowColor = AppColors.primaryPink.withValues(alpha: 0.24);
     final borderColor = AppColors.primaryPink.withValues(alpha: 0.42);
 
@@ -210,10 +194,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 12),
-
-                    // =========================================================
-                    // LOGO – asset image (circular with pink glow)
-                    // =========================================================
                     Center(
                       child: Container(
                         width: 120,
@@ -234,17 +214,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         child: ClipOval(
                           child: Image.asset(
-                            'assets/images/Logo.jpeg', // update to your path
+                            'assets/images/Logo.jpeg',
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 32),
-
-                    // =========================================================
-                    // EMAIL FIELD
-                    // =========================================================
                     _buildField(
                       controller: _emailController,
                       focusNode: _emailFocus,
@@ -263,10 +239,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-
-                    // =========================================================
-                    // PASSWORD FIELD
-                    // =========================================================
                     _buildField(
                       controller: _passwordController,
                       focusNode: _passwordFocus,
@@ -290,10 +262,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 4),
-
-                    // =========================================================
-                    // ERROR MESSAGE
-                    // =========================================================
                     if (errorMessage != null) ...[
                       const SizedBox(height: 8),
                       Container(
@@ -317,22 +285,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                     ],
-
                     const SizedBox(height: 20),
-
-                    // =========================================================
-                    // SIGN IN BUTTON
-                    // =========================================================
                     GradientButton(
                       label: 'Sign In',
                       isLoading: isLoading,
                       onPressed: isLoading ? null : _login,
                     ),
                     const SizedBox(height: 20),
-
-                    // =========================================================
-                    // SIGN UP LINK
-                    // =========================================================
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -349,10 +308,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ],
                     ),
-
-                    // =========================================================
-                    // FORGOT PASSWORD – centered
-                    // =========================================================
                     const SizedBox(height: 4),
                     Center(
                       child: TextButton(
@@ -374,10 +329,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 }
-
-// ============================================================================
-// RANDOM CORNER BORDER PAINTER – same as in RegisterScreen
-// ============================================================================
 
 class _RandomCornerBorderPainter extends CustomPainter {
   final Color color;
@@ -407,27 +358,22 @@ class _RandomCornerBorderPainter extends CustomPainter {
       ..color = glowColor
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
 
-    // Top-left corner
     final topLeft = Path()
       ..moveTo(5, radius)
       ..quadraticBezierTo(5, 5, radius, 5);
 
-    // Top-right corner
     final topRight = Path()
       ..moveTo(size.width - radius, 5)
       ..quadraticBezierTo(size.width - 5, 5, size.width - 5, radius);
 
-    // Bottom-left corner
     final bottomLeft = Path()
       ..moveTo(5, size.height - radius)
       ..quadraticBezierTo(5, size.height - 5, radius, size.height - 5);
 
-    // Bottom-right corner
     final bottomRight = Path()
       ..moveTo(size.width - radius, size.height - 5)
       ..quadraticBezierTo(size.width - 5, size.height - 5, size.width - 5, size.height - radius);
 
-    // Highlight top-left and bottom-right
     final paths = [topLeft, bottomRight];
 
     for (final path in paths) {
@@ -435,7 +381,6 @@ class _RandomCornerBorderPainter extends CustomPainter {
       canvas.drawPath(path, paint);
     }
 
-    // Small extra fragments
     final fragmentPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth

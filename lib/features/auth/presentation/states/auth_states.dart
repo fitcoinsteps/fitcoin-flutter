@@ -15,7 +15,7 @@ class RegistrationState with _$RegistrationState {
   }) = _RegistrationSuccess;
 
   const factory RegistrationState.error({required String message}) =
-      _RegistrationError;
+  _RegistrationError;
 }
 
 @freezed
@@ -24,9 +24,24 @@ class OtpVerificationState with _$OtpVerificationState {
 
   const factory OtpVerificationState.loading() = _OtpVerificationLoading;
 
-  const factory OtpVerificationState.success({required UserEntity user}) =
-      _OtpVerificationSuccess;
+  const factory OtpVerificationState.success({
+    required OtpVerificationResult result,
+  }) = _OtpVerificationSuccess;
 
   const factory OtpVerificationState.error({required String message}) =
-      _OtpVerificationError;
+  _OtpVerificationError;
+}
+
+class OtpVerificationResult {
+  final UserEntity user;
+  final String accessToken;
+  final String refreshToken;
+  final int expiresIn;
+
+  const OtpVerificationResult({
+    required this.user,
+    required this.accessToken,
+    required this.refreshToken,
+    required this.expiresIn,
+  });
 }

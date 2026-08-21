@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:fitcoin/core/cache/cache_service.dart';
 import 'package:fitcoin/features/auth/presentation/providers/auth_providers.dart';
 
 class VerifyOtpScreen extends ConsumerStatefulWidget {
@@ -49,9 +50,19 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
       loading: () {
         // Still loading, keep spinner
       },
-      success: (user) {
+      success: (result) {
         setState(() => _isLoading = false);
-        debugPrint('✅ User verified: ${user.firstName} ${user.lastName}');
+
+        // ✅ Cache tokens (already cached in datasource, but safe)
+        if (result.accessToken.isNotEmpty) {
+          CacheService.cacheToken(result.accessToken);
+        }
+        if (result.refreshToken.isNotEmpty) {
+          CacheService.cacheRefreshToken(result.refreshToken);
+        }
+        CacheService.cacheTokenExpiry(result.expiresIn);
+
+        debugPrint('✅ User verified: ${result.user.firstName} ${result.user.lastName}');
         // Navigate to home
         context.go('/');
       },

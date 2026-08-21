@@ -24,8 +24,38 @@ class CacheService {
     await Hive.openBox(_cacheBox);
   }
 
+  // ==================== ACCESS TOKEN ====================
   static String? getToken() {
     return Hive.box(_cacheBox).get('access_token');
+  }
+
+  static void cacheToken(String token) {
+    Hive.box(_cacheBox).put('access_token', token);
+  }
+
+  // ==================== REFRESH TOKEN ====================
+  static String? getRefreshToken() {
+    return Hive.box(_cacheBox).get('refresh_token');
+  }
+
+  static void cacheRefreshToken(String refreshToken) {
+    Hive.box(_cacheBox).put('refresh_token', refreshToken);
+  }
+
+  // ==================== TOKEN EXPIRY ====================
+  static int? getTokenExpiry() {
+    return Hive.box(_cacheBox).get('token_expiry');
+  }
+
+  static void cacheTokenExpiry(int expiresIn) {
+    final expiryTime = DateTime.now().millisecondsSinceEpoch + (expiresIn * 1000);
+    Hive.box(_cacheBox).put('token_expiry', expiryTime);
+  }
+
+  static bool isTokenExpired() {
+    final expiry = getTokenExpiry();
+    if (expiry == null) return true;
+    return DateTime.now().millisecondsSinceEpoch > expiry;
   }
 
   static bool isLoggedIn() => getToken() != null;
@@ -35,13 +65,13 @@ class CacheService {
     Hive.box(_cacheBox).clear();
   }
 
+  // ==================== USER ====================
   Box getUserBox() => Hive.box(_userBox);
 
   Box getCacheBox() => Hive.box(_cacheBox);
 
   void cacheUserEntity(UserEntity user) {
     _logger.d('Caching user: ${user.email}');
-
     final box = getUserBox();
     box
       ..put('current_user_entity', user)
@@ -51,17 +81,14 @@ class CacheService {
 
   UserEntity? getCachedUserEntity() {
     final user = getUserBox().get('current_user_entity');
-
     if (user != null) {
       _logger.d('Retrieved cached user entity');
     }
-
     return user as UserEntity?;
   }
 
   void cacheUser(Map<String, dynamic> user) {
     _logger.d('Caching user: ${user['email']}');
-
     final box = getUserBox();
     box
       ..put('current_user', user)
@@ -71,40 +98,15 @@ class CacheService {
 
   Map<String, dynamic>? getCachedUser() {
     final user = getUserBox().get('current_user');
-
     if (user != null) {
       _logger.d('Retrieved cached user');
     }
-
     return user as Map<String, dynamic>?;
   }
 
   void clearUser() {
     _logger.d('Clearing user cache');
     getUserBox().clear();
-  }
-
-  void cacheToken(String token) {
-    _logger.d('Caching token');
-    getCacheBox().put('access_token', token);
-  }
-
-  String? getCachedToken() {
-    return getCacheBox().get('access_token');
-  }
-
-  void cacheData(String key, dynamic value) {
-    _logger.d('Caching data: $key');
-    getCacheBox().put(key, value);
-  }
-
-  dynamic getCachedData(String key) {
-    return getCacheBox().get(key);
-  }
-
-  void clearCache() {
-    _logger.d('Clearing generic cache');
-    getCacheBox().clear();
   }
 
   void logout() {

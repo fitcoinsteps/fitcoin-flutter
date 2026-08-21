@@ -31,7 +31,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
   final RegisterUseCase registerUseCase;
 
   RegistrationNotifier(this.registerUseCase)
-      : super(const RegistrationState.initial());
+      : super(RegistrationState.initial());
 
   Future<void> register({
     required String firstName,
@@ -41,7 +41,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     required String passwordConfirmation,
     String? phone,
   }) async {
-    state = const RegistrationState.loading();
+    state = RegistrationState.loading();
 
     final result = await registerUseCase(
       firstName: firstName,
@@ -59,41 +59,39 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
   }
 
   void reset() {
-    state = const RegistrationState.initial();
+    state = RegistrationState.initial();
   }
 }
 
 final registrationProvider =
 StateNotifierProvider<RegistrationNotifier, RegistrationState>(
-      (ref) => RegistrationNotifier(ref.read(registerUseCaseProvider)),
-);
+        (ref) => RegistrationNotifier(ref.read(registerUseCaseProvider)));
 
 class OtpVerificationNotifier extends StateNotifier<OtpVerificationState> {
   final VerifyOtpUseCase verifyOtpUseCase;
 
   OtpVerificationNotifier(this.verifyOtpUseCase)
-      : super(const OtpVerificationState.initial());
+      : super(OtpVerificationState.initial());
 
   Future<void> verifyOtp({
     required String email,
-    required String code, // ✅ Changed from 'otp' to 'code'
+    required String code,
   }) async {
-    state = const OtpVerificationState.loading();
+    state = OtpVerificationState.loading();
 
     final result = await verifyOtpUseCase(email: email, code: code);
 
     result.fold(
           (failure) => state = OtpVerificationState.error(message: failure.message),
-          (user) => state = OtpVerificationState.success(user: user),
+          (otpResult) => state = OtpVerificationState.success(result: otpResult),
     );
   }
 
   void reset() {
-    state = const OtpVerificationState.initial();
+    state = OtpVerificationState.initial();
   }
 }
 
 final otpVerificationProvider =
 StateNotifierProvider<OtpVerificationNotifier, OtpVerificationState>(
-      (ref) => OtpVerificationNotifier(ref.read(verifyOtpUseCaseProvider)),
-);
+        (ref) => OtpVerificationNotifier(ref.read(verifyOtpUseCaseProvider)));

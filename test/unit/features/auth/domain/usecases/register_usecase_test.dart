@@ -148,6 +148,7 @@ void main() {
 
     test('should return RegistrationResponse when validations pass', () async {
       const response = RegistrationResponse(
+        success: true,              // <-- add this
         message: 'OTP sent',
         email: 'john@example.com',
         redirect: '/verify-otp',

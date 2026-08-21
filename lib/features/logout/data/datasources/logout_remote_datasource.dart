@@ -10,7 +10,8 @@ class LogoutRemoteDataSource {
 
   Future<String> logout() async {
     try {
-      final token = cacheService.getCachedToken();
+      // ✅ Use static method
+      final token = CacheService.getToken();
 
       final response = await dio.post(
         '/logout',
@@ -22,21 +23,22 @@ class LogoutRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        cacheService.logout(); // ✅ No await - it's void
+        CacheService.clearAll(); // ✅ Static method
         return response.data['message'] ?? 'Logged out successfully';
       } else {
         throw Exception(response.data['error'] ?? 'Logout failed');
       }
     } on DioException catch (e) {
       // Even if API fails, clear local cache
-      cacheService.logout(); // ✅ No await - it's void
+      CacheService.clearAll(); // ✅ Static method
       throw Exception(e.response?.data['error'] ?? 'Logout failed');
     }
   }
 
   Future<String> logoutAllDevices() async {
     try {
-      final token = cacheService.getCachedToken();
+      // ✅ Use static method
+      final token = CacheService.getToken();
 
       final response = await dio.post(
         '/logout-all',
@@ -48,13 +50,13 @@ class LogoutRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        cacheService.logout(); // ✅ No await - it's void
+        CacheService.clearAll(); // ✅ Static method
         return response.data['message'] ?? 'All sessions revoked successfully';
       } else {
         throw Exception(response.data['error'] ?? 'Logout failed');
       }
     } on DioException catch (e) {
-      cacheService.logout(); // ✅ No await - it's void
+      CacheService.clearAll(); // ✅ Static method
       throw Exception(e.response?.data['error'] ?? 'Logout failed');
     }
   }

@@ -20,11 +20,23 @@ class LoginRepositoryImpl implements LoginRepository {
       final request = LoginRequest(email: email, password: password);
       final response = await remoteDataSource.login(request);
       return Right(response);
-    } on Exception catch (e) {
-      if (e is DioException) {
-        return Left(ServerFailure(message: e.response?.data['error'] ?? 'Login failed'));
+    } on DioException catch (e) {
+      // Extract message from Dio response
+      final data = e.response?.data;
+      String message = 'Login failed';
+      if (data is Map && data.containsKey('error')) {
+        message = data['error'] as String;
+      } else if (data is Map && data.containsKey('message')) {
+        message = data['message'] as String;
       }
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(message: message));
+    } on Exception catch (e) {
+      // For non-Dio exceptions, strip 'Exception: ' prefix if present
+      String message = e.toString();
+      if (message.startsWith('Exception: ')) {
+        message = message.substring('Exception: '.length);
+      }
+      return Left(ServerFailure(message: message));
     }
   }
 }

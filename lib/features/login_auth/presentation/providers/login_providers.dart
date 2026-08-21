@@ -36,8 +36,15 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
     result.fold(
           (failure) => state = LoginError(failure.message),
-          (response) => state = LoginSuccess(response),
+          (response) {
+        state = LoginSuccess(response);
+      },
     );
+  }
+
+  Future<void> logout() async {
+    CacheService.clearAll();
+    state = const LoginInitial();
   }
 
   void reset() {

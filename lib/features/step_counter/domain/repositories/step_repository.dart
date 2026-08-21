@@ -6,5 +6,6 @@ abstract class StepRepository {
   Future<Either<Failure, StepData>> getTodaySteps();
   Future<Either<Failure, void>> saveDailySteps(StepData stepData);
   Future<Either<Failure, StepData>> syncSteps(StepData stepData);
+  Future<Either<Failure, void>> updateGoal(int goal); // ✅ add this line
   Stream<int> startStepStream();
 }
