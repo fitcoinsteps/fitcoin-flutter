@@ -23,7 +23,7 @@ class AppConfig {
 
   static const AppConfig development = AppConfig(
     flavor: Flavor.development,
-    apiBaseUrl: 'http://10.0.0.98:8000/api',
+    apiBaseUrl: 'http://10.0.0.72:8000/api',
     googleMapsApiKey: 'AIzaSyB2oIEcWiWQo3cvElqVw5Bpb8f-c6bKXIU', // <-- your key
     debugMode: true,
     enableLogging: true,
